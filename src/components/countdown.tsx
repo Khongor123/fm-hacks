@@ -25,7 +25,7 @@ export function Countdown() {
 
   return (
     <div className="countdown" aria-live="off">
-      <div className="countdown-label">{time?.finished ? "The hack has begun" : "Countdown to kickoff"}</div>
+      <div className="countdown-label">{time?.finished ? "The hackathon has begun" : "Countdown to kickoff"}</div>
       <div className="countdown-units" aria-label={time ? `${time.days} days, ${time.hours} hours, ${time.minutes} minutes, ${time.seconds} seconds until kickoff` : "Loading countdown"}>
         {(["days", "hours", "minutes", "seconds"] as const).map((unit) => (
           <div className="countdown-unit" key={unit}>
