@@ -7,7 +7,7 @@ export async function SiteHeader() {
   return (
     <header className="site-header">
       <div className="shell nav-inner">
-        <Link href="/" className="brand" aria-label="F&MHacks home"><span className="brand-mark">F<span>&</span>M</span><span>HACKS<span className="brand-year"> / 26</span></span></Link>
+        <Link href="/" className="brand" aria-label="F&MHacks home"><span className="brand-mark">F&amp;M</span><span>HACKS<span className="brand-year"> / 26</span></span></Link>
         <nav aria-label="Main navigation">
           <Link href="/#about">About</Link>
           <Link href="/#schedule">Schedule</Link>
