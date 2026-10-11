@@ -1,0 +1,30 @@
+import Link from "next/link";
+import { Countdown } from "@/components/countdown";
+
+export default function Home() {
+  return <main>
+    <section className="hero">
+      <div className="shell hero-grid">
+        <div className="hero-content">
+          <p className="eyebrow"><span className="eyebrow-dot" /> THE F&M CS CLUB PRESENTS</p>
+          <h1>Build something<br/><em>worth sharing.</em></h1>
+          <p className="hero-description">One campus. One day and night. A room full of ideas waiting to become real. Join students across every major for F&MHacks 2026.</p>
+          <div className="hero-actions"><Link href="/register" className="button button-primary">Register now <span aria-hidden="true">↗</span></Link><a href="#about" className="button button-ghost">Explore the event <span aria-hidden="true">↓</span></a></div>
+          <div className="hero-facts"><div><strong>NOV 7–8</strong><span>2026</span></div><div><strong>24 HOURS</strong><span>of making</span></div><div><strong>STAGER</strong><span>Auditorium</span></div></div>
+        </div>
+        <div className="hero-aside"><div className="orbit-art" aria-hidden="true"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orbit orbit-three"/><div className="orbit-center">&</div><span className="orbit-star star-one">✳</span><span className="orbit-star star-two">✳</span><span className="orbit-star star-three">✦</span></div><Countdown /></div>
+      </div>
+      <div className="hero-bottom shell"><span>Registration closes Nov 4 at 11:59 p.m. ET</span><span>OPEN TO ALL F&M MAJORS</span></div>
+    </section>
+
+    <section className="section intro" id="about"><div className="shell two-column"><div><p className="section-kicker">01 / ABOUT THE HACK</p><h2>Good ideas don’t<br/>wait for permission.</h2></div><div className="intro-copy"><p>F&MHacks is a 24-hour chance to make something with people who care about ideas. Bring your curiosity, find a team, and turn a small spark into a project you can show.</p><p>Whether you code, design, write, research, or present, there is a place for you. Teams can have up to four members, and each project needs at least one person who can program.</p><div className="pill-row"><span>Free to join</span><span>Free participant T-shirt</span><span>Food & snacks</span></div></div></div></section>
+
+    <section className="section tracks-section"><div className="shell"><div className="section-heading"><div><p className="section-kicker">02 / CHOOSE A DIRECTION</p><h2>Three ways to start.</h2></div><p>Track descriptions and judging criteria are being finalized. You’ll choose one track for your project submission.</p></div><div className="track-grid"><article className="track-card"><span className="track-number">01</span><div className="track-icon">✳</div><h3>AI</h3><p>Explore what today’s AI can help people create or understand.</p><span className="track-foot">Details coming soon ↗</span></article><article className="track-card"><span className="track-number">02</span><div className="track-icon">◎</div><h3>Social good</h3><p>Make something useful for a community, on campus or beyond.</p><span className="track-foot">Details coming soon ↗</span></article><article className="track-card"><span className="track-number">03</span><div className="track-icon">✦</div><h3>Creative build</h3><p>Surprise us with a game, experience, or new form of expression.</p><span className="track-foot">Details coming soon ↗</span></article></div></div></section>
+
+    <section className="section schedule-section" id="schedule"><div className="shell two-column"><div><p className="section-kicker">03 / THE PLAN</p><h2>24 hours.<br/>A lot can happen.</h2><p className="section-note">Times are Eastern. The detailed schedule may change as organizers finalize the event.</p></div><div className="schedule-list"><div className="schedule-day">SATURDAY · NOV 7</div><div className="schedule-row"><time>9:00 AM</time><span>Welcome and kickoff</span></div><div className="schedule-row"><time>10:00 AM</time><span>Hacking begins</span></div><div className="schedule-row"><time>Midnight</time><span>Late-night pizza</span></div><div className="schedule-day">SUNDAY · NOV 8</div><div className="schedule-row"><time>10:00 AM</time><span>Projects due</span></div><div className="schedule-row"><time>10:30 AM</time><span>Presentations and judging</span></div><div className="schedule-row"><time>~1:30 PM</time><span>Results and closing</span></div></div></div></section>
+
+    <section className="section rules-section" id="rules"><div className="shell"><div className="section-heading"><div><p className="section-kicker">04 / THE GROUND RULES</p><h2>Make it yours.</h2></div><p>We want to see what your team can build during the event.</p></div><div className="rules-grid"><div><span>01</span><p>Write your project code during the hackathon. No prebuilt project submissions.</p></div><div><span>02</span><p>Software projects only; no hardware required or accepted.</p></div><div><span>03</span><p>Disclose where and how you used AI. A single prompt alone is not a finished project.</p></div><div><span>04</span><p>You can discuss ideas with other teams, but direct project work comes from your own team.</p></div></div></div></section>
+
+    <section className="cta-section"><div className="shell cta-inner"><div><p className="section-kicker">READY TO MAKE SOMETHING?</p><h2>Your next idea<br/>starts here.</h2><p>Seats are limited to 75 students. Register with your F&M email by November 4.</p></div><Link href="/register" className="button button-light">Save your spot <span aria-hidden="true">↗</span></Link></div></section>
+  </main>;
+}
