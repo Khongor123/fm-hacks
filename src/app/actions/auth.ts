@@ -12,8 +12,10 @@ function errorRedirect(path: string, message: string): never {
   redirect(`${path}?error=${encodeURIComponent(message)}`);
 }
 
-export async function register(data: FormData) {
-  if (!registrationOpen()) errorRedirect("/register", "Registration has closed.");
+export type RegistrationState = { error: string | null };
+
+export async function register(_previous: RegistrationState, data: FormData): Promise<RegistrationState> {
+  if (!registrationOpen()) return { error: "Registration has closed." };
   const fullName = value(data, "full_name");
   const grade = value(data, "grade");
   const email = value(data, "email").toLowerCase();
@@ -22,23 +24,35 @@ export async function register(data: FormData) {
   const tshirtSize = value(data, "tshirt_size");
   const committed = data.get("attendance_commitment") === "on";
 
-  if (fullName.length < 2 || fullName.length > 120) errorRedirect("/register", "Enter your full name.");
-  if (!["first-year", "sophomore", "junior", "senior"].includes(grade)) errorRedirect("/register", "Choose your class year.");
-  if (!/^[^@\s]+@fandm\.edu$/.test(email)) errorRedirect("/register", "Use your F&M email address.");
-  if (email !== repeatedEmail) errorRedirect("/register", "The email addresses do not match.");
-  if (password.length < 12) errorRedirect("/register", "Use a password with at least 12 characters.");
-  if (!["XS", "S", "M", "L", "XL", "2XL", "3XL"].includes(tshirtSize)) errorRedirect("/register", "Choose a T-shirt size.");
-  if (!committed) errorRedirect("/register", "Please confirm you expect to attend.");
+  if (fullName.length < 2 || fullName.length > 120) return { error: "Enter your full name." };
+  if (!["first-year", "sophomore", "junior", "senior"].includes(grade)) return { error: "Choose your class year." };
+  if (!/^[^@\s]+@fandm\.edu$/.test(email)) return { error: "Use your F&M email address." };
+  if (email !== repeatedEmail) return { error: "The email addresses do not match." };
+  if (password.length < 12) return { error: "Use a password with at least 12 characters." };
+  if (!["XS", "S", "M", "L", "XL", "2XL", "3XL"].includes(tshirtSize)) return { error: "Choose a T-shirt size." };
+  if (!committed) return { error: "Please confirm you expect to attend." };
 
   const supabase = await createClient();
-  const { data: signup, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { full_name: fullName, grade, tshirt_size: tshirtSize, attendance_commitment: true },
-    },
-  });
-  if (error) errorRedirect("/register", "We could not create your account. Check your details or try logging in.");
+  let signup;
+  try {
+    const result = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName, grade, tshirt_size: tshirtSize, attendance_commitment: true },
+      },
+    });
+    if (result.error) {
+      console.error("Registration failed:", result.error);
+      return { error: result.error.message.includes("already registered")
+        ? "This email already has an account. Log in instead."
+        : "We could not create your account. Check your details or try logging in." };
+    }
+    signup = result.data;
+  } catch (error) {
+    console.error("Registration connection failed:", error);
+    return { error: "Could not reach the registration service. Check your connection and try again." };
+  }
   if (!signup.session) redirect("/register?confirmation_required=1");
   redirect("/#dashboard");
 }
