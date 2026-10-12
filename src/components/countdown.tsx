@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { EVENT_START } from "@/lib/config";
 
-function remaining() {
-  const total = Math.max(0, new Date(EVENT_START).getTime() - Date.now());
+function remaining(now: number) {
+  const total = Math.max(0, new Date(EVENT_START).getTime() - now);
   return {
     days: Math.floor(total / 86_400_000),
     hours: Math.floor((total / 3_600_000) % 24),
@@ -14,14 +14,15 @@ function remaining() {
   };
 }
 
-export function Countdown() {
+export function Countdown({ serverNow }: { serverNow?: number }) {
   const [time, setTime] = useState<ReturnType<typeof remaining> | null>(null);
   useEffect(() => {
-    const tick = () => setTime(remaining());
+    const start = performance.now();
+    const tick = () => setTime(remaining(serverNow === undefined ? Date.now() : serverNow + performance.now() - start));
     tick();
     const timer = window.setInterval(tick, 1000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [serverNow]);
 
   return (
     <div className="countdown" aria-live="off">

@@ -2,20 +2,30 @@ import Link from "next/link";
 import { Countdown } from "@/components/countdown";
 import { ParticipantDashboard, type Team } from "@/components/participant-dashboard";
 import { createClient } from "@/lib/supabase/server";
+import { EventDashboard } from "@/components/event-dashboard";
+import { EventBoundary } from "@/components/event-boundary";
+import { EVENT_DAY_START, type Submission } from "@/lib/event";
+import { getEventNow } from "@/lib/event-clock";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ team_error?: string; team_notice?: string }> }) {
   const params = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const now = user ? await getEventNow(supabase) : Date.now();
   const { data: profile } = user
-    ? await supabase.from("profiles").select("full_name,registration_status,admin").eq("id", user.id).single()
+    ? await supabase.from("profiles").select("full_name,registration_status,admin,checked_in_at").eq("id", user.id).single()
     : { data: null };
   const { data: team, error: teamError } = profile?.registration_status === "confirmed" && !profile.admin
     ? await supabase.rpc("get_my_team")
     : { data: null, error: null };
 
+  const { data: submission, error: submissionError } = profile && now >= Date.parse(EVENT_DAY_START) && profile.registration_status === "confirmed" && !profile.admin
+    ? await supabase.rpc("get_my_submission") : { data: null, error: null };
+
   return <main>
-    {profile ? <ParticipantDashboard profile={profile} team={team as Team | null} teamLoadError={!!teamError} notice={params.team_notice} error={params.team_error} />
+    {profile ? now >= Date.parse(EVENT_DAY_START)
+      ? <EventDashboard profile={profile} userId={user!.id} team={team as Team | null} submission={submission as Submission | null} teamLoadError={!!teamError} submissionLoadError={!!submissionError} now={now} />
+      : <><EventBoundary initialPhase="before" serverNow={now} /><ParticipantDashboard profile={profile} team={team as Team | null} teamLoadError={!!teamError} now={now} notice={params.team_notice} error={params.team_error} /></>
       : user ? <section className="participant-home"><div className="shell"><h1>Account setup is finishing.</h1><p>Refresh this page in a moment. If this persists, contact the organizers.</p><Link href="/account" className="button button-ghost">My account</Link></div></section>
       : <section className="hero">
       <div className="shell hero-grid">

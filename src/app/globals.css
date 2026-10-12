@@ -287,3 +287,39 @@ a { color: inherit; text-decoration: none; }
   .team-member-list { grid-template-columns: 1fr; }
   .team-code-row strong { font-size: 21px; }
 }
+
+/* Event-day dashboard and submission form */
+.event-overview, .event-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+.deadline-clock { display: flex; flex-direction: column; justify-content: center; padding: 28px; border-radius: 16px; background: var(--heritage-navy); color: white; }
+.deadline-clock .card-label { color: #99cfff; }
+.deadline-clock strong { margin: 12px 0; font-size: clamp(40px, 5vw, 64px); line-height: 1; letter-spacing: -.05em; }
+.deadline-clock p { margin: 0; color: #dce9fa; }
+.event-schedule, .plain-list { padding-left: 20px; color: var(--printers-ink); font-size: 13px; line-height: 1.7; }
+.event-schedule li, .plain-list li { margin: 7px 0; }
+.event-schedule time { display: inline-block; min-width: 110px; color: var(--heritage-navy); font-weight: 700; }
+.submission-panel { margin-top: 16px; }
+.submission-heading { display: flex; justify-content: space-between; align-items: start; gap: 16px; }
+.submission-state { padding: 6px 11px; border-radius: 999px; background: #eaf0fb; color: var(--true-blue); font-size: 11px; font-weight: 700; white-space: nowrap; text-transform: uppercase; }
+.submission-state.submitted { background: #eaf6ef; color: #245f45; }
+.submission-state.deadline-passed { background: #f0f0f0; color: var(--printers-ink); }
+.submission-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 24px 0; }
+.submission-fields .field:nth-child(2), .submission-fields .field:nth-child(4), .submission-fields .field:nth-child(7), .submission-fields .field:nth-child(8), .submission-fields .check-line { grid-column: 1 / -1; }
+.field textarea { width: 100%; padding: 12px 13px; border: 1px solid #b8bdc3; border-radius: 8px; font: inherit; resize: vertical; }
+.field input[type="file"] { height: auto; padding: 12px; }
+.field small a { color: var(--true-blue); text-decoration: underline; }
+.check-line { display: flex; align-items: start; gap: 8px; color: var(--heritage-navy); font-size: 13px; }
+.check-line input { margin-top: 4px; }
+.submission-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.submission-actions button:disabled, .submission-panel button:disabled { opacity: .6; cursor: wait; }
+.submission-summary { display: grid; gap: 12px; margin: 20px 0; }
+.submission-summary > div { display: grid; grid-template-columns: 135px 1fr; gap: 12px; border-bottom: 1px solid var(--soft-line); padding-bottom: 9px; }
+.submission-summary dt { color: var(--muted); font-size: 12px; }
+.submission-summary dd { margin: 0; min-width: 0; overflow-wrap: anywhere; font-size: 13px; }
+.submission-summary small, .member-check { display: block; }
+.organizer-group { margin: 32px 0; }
+.organizer-group h2 { color: var(--heritage-navy); }
+.organizer-group h2 small { color: var(--muted); font-size: 13px; }
+.organizer-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.organizer-cards h3 { margin: 3px 0; color: var(--heritage-navy); font-size: 23px; }
+.checkin-meta { display: block; color: var(--muted); font-size: 10px; white-space: nowrap; }
+@media (max-width: 760px) { .event-overview, .event-details, .organizer-cards, .submission-fields { grid-template-columns: 1fr; } .submission-fields > * { grid-column: auto !important; } }

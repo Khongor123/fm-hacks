@@ -1,10 +1,10 @@
 # F&MHacks 2026
 
-The F&MHacks website includes event information, email/password registration, a 75-place waitlist, a signed-in dashboard, teams by code, and a private organizer roster. Project submissions are planned for a later release.
+The F&MHacks website includes event information, email/password registration, a 75-place waitlist, a signed-in dashboard, teams by code, a private organizer roster, event-day dashboard, check-in, and project submissions.
 
 ## Run locally
 
-1. Create a Supabase project. In its SQL Editor, run [`supabase/schema.sql`](supabase/schema.sql). For an existing project, run [`supabase/migrations/20261011_remove_email_confirmation.sql`](supabase/migrations/20261011_remove_email_confirmation.sql) if you have not applied it yet, then run [`supabase/migrations/20261011_dashboard_teams.sql`](supabase/migrations/20261011_dashboard_teams.sql).
+1. Create a Supabase project. In its SQL Editor, run [`supabase/schema.sql`](supabase/schema.sql). For an existing project, run [`supabase/migrations/20261011_remove_email_confirmation.sql`](supabase/migrations/20261011_remove_email_confirmation.sql) if you have not applied it yet, then run [`supabase/migrations/20261011_dashboard_teams.sql`](supabase/migrations/20261011_dashboard_teams.sql), followed by [`supabase/migrations/20261011_event_submissions.sql`](supabase/migrations/20261011_event_submissions.sql). For a new project, run `schema.sql`, then the event submissions migration.
 2. In **Supabase → Authentication → Sign In / Providers → Email**, keep email/password signup enabled and turn **Confirm Email** off. Set the minimum password length to 12. Apply the migration in step 1 **before** turning off Confirm Email on an existing project.
 3. Create `.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. The last variable is used for password reset links.
 4. Run `npm install`, then `npm run dev`.
@@ -32,3 +32,15 @@ Repeating an email catches typing mistakes; it does not prove that a student own
 The **Forgot password** flow still sends a reset email. For that feature to reach arbitrary student addresses, configure custom SMTP in Supabase Auth. Add the production `/auth/callback?next=/reset-password` URL to Supabase's redirect allowlist. Without working SMTP, students who forget their passwords may need organizer help to regain access.
 
 Supabase Auth manages passwords and sessions; passwords are never stored in `profiles`. Every profile is private to its owner and organizers. Admin status cannot be changed from the website.
+
+## Event day and submissions
+
+At **9:00 a.m. Eastern on November 7, 2026**, the signed-in dashboard switches to event information. Submissions open at **10:00 a.m. Eastern** and close at **10:00 a.m. Eastern on November 8**. The page refreshes at these boundaries, and the database uses its own clock for every write. The event-day migration must be applied before the updated site is deployed.
+
+Organizers verify student identity in person and mark confirmed participants as arrived on `/admin`. A checked-in team member can save a shared draft, upload slides, and submit or resubmit on behalf of the team. A checked-in student without a team can submit alone. Entries become read only at the deadline except for the GitHub repository URL, which participants may correct afterward. Organizers review entries by track at `/admin/submissions` and verify that the affirmed public GitHub links actually open.
+
+Slides live in the private `submission-slides` Supabase Storage bucket created by the migration. Only the submitting team or solo student and organizers can download them. Files are limited to 10 MiB and `.pptx`, `.key`, or `.pdf`; Keynote packages must be exported to PDF. Uploads over 6 MiB use the TUS resumable endpoint. Replacing a slide updates the submission first, then removes the previous object. If removal fails, an organizer may need to remove the unused file in Supabase Storage.
+
+The event migration has not been applied to a remote Supabase project by this repository alone. Apply it in Supabase SQL Editor before deploying.
+
+To rehearse the event safely before November 7, follow the [event preview guide](docs/event-preview.md) on the `event-preview` branch with a separate Supabase project.

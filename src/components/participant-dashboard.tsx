@@ -22,14 +22,15 @@ const statusDetails: Record<string, string> = {
   organizer: "Your organizer account is ready.",
 };
 
-export function ParticipantDashboard({ profile, team, teamLoadError, notice, error }: {
+export function ParticipantDashboard({ profile, team, teamLoadError, now, notice, error }: {
   profile: Profile;
   team: Team | null;
   teamLoadError: boolean;
+  now: number;
   notice?: string;
   error?: string;
 }) {
-  const open = teamChangesOpen();
+  const open = teamChangesOpen(now);
   const canJoinTeams = profile.registration_status === "confirmed" && !profile.admin;
   const firstName = profile.full_name.trim().split(/\s+/)[0];
   const success = notice === "created" ? "Your team is ready. Share its code with your teammates."
@@ -55,7 +56,7 @@ export function ParticipantDashboard({ profile, team, teamLoadError, notice, err
         <p>Saturday, November 7 · 9:00 a.m. · Stager Auditorium</p>
         {profile.admin && <Link href="/admin" className="text-link">Open organizer roster ↗</Link>}
       </section>
-      <Countdown />
+      <Countdown serverNow={now} />
     </div>
 
     <section className="participant-panel team-panel" id="my-team">
