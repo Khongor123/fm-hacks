@@ -6,8 +6,8 @@ revoke all on schema app_private from public, anon, authenticated;
 create table if not exists app_private.event_clock_offset (
   singleton boolean primary key default true check (singleton),
   preview_enabled boolean not null default false,
-  offset interval not null default interval '0 seconds',
-  check (preview_enabled or offset = interval '0 seconds')
+  clock_offset interval not null default interval '0 seconds',
+  check (preview_enabled or clock_offset = interval '0 seconds')
 );
 revoke all on app_private.event_clock_offset from public, anon, authenticated;
 insert into app_private.event_clock_offset (singleton)
@@ -15,7 +15,7 @@ values (true) on conflict (singleton) do nothing;
 
 create or replace function public.event_now()
 returns timestamptz language sql volatile security definer set search_path = '' as $$
-  select clock_timestamp() + case when preview_enabled then offset else interval '0 seconds' end
+  select clock_timestamp() + case when preview_enabled then clock_offset else interval '0 seconds' end
   from app_private.event_clock_offset where singleton = true;
 $$;
 revoke all on function public.event_now() from public, anon, authenticated;

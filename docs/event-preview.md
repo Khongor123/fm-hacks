@@ -19,7 +19,7 @@ Before kickoff (preparation dashboard):
 ```sql
 update app_private.event_clock_offset
 set preview_enabled = true,
-    offset = timestamptz '2026-11-07 08:59:00-05' - clock_timestamp()
+    clock_offset = timestamptz '2026-11-07 08:59:00-05' - clock_timestamp()
 where singleton = true;
 select public.event_now();
 ```
@@ -29,7 +29,7 @@ At kickoff (event information, submissions still closed):
 ```sql
 update app_private.event_clock_offset
 set preview_enabled = true,
-    offset = timestamptz '2026-11-07 09:00:00-05' - clock_timestamp()
+    clock_offset = timestamptz '2026-11-07 09:00:00-05' - clock_timestamp()
 where singleton = true;
 select public.event_now();
 ```
@@ -39,7 +39,7 @@ During submissions:
 ```sql
 update app_private.event_clock_offset
 set preview_enabled = true,
-    offset = timestamptz '2026-11-07 10:00:00-05' - clock_timestamp()
+    clock_offset = timestamptz '2026-11-07 10:00:00-05' - clock_timestamp()
 where singleton = true;
 select public.event_now();
 ```
@@ -49,7 +49,7 @@ Just before the deadline, to watch the page switch while it stays open:
 ```sql
 update app_private.event_clock_offset
 set preview_enabled = true,
-    offset = timestamptz '2026-11-08 09:59:00-05' - clock_timestamp()
+    clock_offset = timestamptz '2026-11-08 09:59:00-05' - clock_timestamp()
 where singleton = true;
 select public.event_now();
 ```
@@ -59,7 +59,7 @@ After the deadline:
 ```sql
 update app_private.event_clock_offset
 set preview_enabled = true,
-    offset = timestamptz '2026-11-08 10:00:00-05' - clock_timestamp()
+    clock_offset = timestamptz '2026-11-08 10:00:00-05' - clock_timestamp()
 where singleton = true;
 select public.event_now();
 ```
@@ -68,7 +68,7 @@ Reset the test clock when finished:
 
 ```sql
 update app_private.event_clock_offset
-set preview_enabled = false, offset = interval '0 seconds'
+set preview_enabled = false, clock_offset = interval '0 seconds'
 where singleton = true;
 ```
 
