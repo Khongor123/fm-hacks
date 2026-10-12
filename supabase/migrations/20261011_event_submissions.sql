@@ -40,7 +40,8 @@ end; $$;
 revoke all on function public.set_check_in(uuid, boolean) from public, anon, authenticated;
 grant execute on function public.set_check_in(uuid, boolean) to authenticated;
 
-create table public.submissions (
+-- An earlier attempt may already have created the table. Preserve its rows.
+create table if not exists public.submissions (
   id uuid primary key default gen_random_uuid(),
   team_id uuid unique references public.teams(id) on delete cascade,
   solo_user_id uuid unique references public.profiles(id) on delete cascade,
@@ -61,7 +62,7 @@ create table public.submissions (
   updated_by uuid references public.profiles(id) on delete set null,
   check (num_nonnulls(team_id, solo_user_id) = 1)
 );
-create index submissions_track_idx on public.submissions (track, status);
+create index if not exists submissions_track_idx on public.submissions (track, status);
 alter table public.submissions enable row level security;
 revoke all on public.submissions from public, anon, authenticated;
 
@@ -73,6 +74,7 @@ returns boolean language sql stable security definer set search_path = '' as $$
 $$;
 revoke all on function public.can_read_submission(uuid,uuid) from public, anon, authenticated;
 grant execute on function public.can_read_submission(uuid,uuid) to authenticated;
+drop policy if exists "Members and organizers read submissions" on public.submissions;
 create policy "Members and organizers read submissions" on public.submissions
   for select to authenticated using (public.can_read_submission(team_id, solo_user_id));
 grant select on public.submissions to authenticated;
@@ -119,10 +121,13 @@ insert into storage.buckets (id, name, public, file_size_limit)
 values ('submission-slides', 'submission-slides', false, 10485760)
 on conflict (id) do update set public = false, file_size_limit = 10485760;
 
+drop policy if exists "Authorized slide downloads" on storage.objects;
 create policy "Authorized slide downloads" on storage.objects for select to authenticated
   using (bucket_id = 'submission-slides' and public.can_read_slide(name));
+drop policy if exists "Checked-in slide uploads" on storage.objects;
 create policy "Checked-in slide uploads" on storage.objects for insert to authenticated
   with check (bucket_id = 'submission-slides' and public.can_write_slide(name));
+drop policy if exists "Remove unused slides" on storage.objects;
 create policy "Remove unused slides" on storage.objects for delete to authenticated
   using (bucket_id = 'submission-slides' and public.can_delete_slide(name));
 
