@@ -16,6 +16,6 @@ export function RegistrationForm() {
     <div className="field"><label htmlFor="password">Password</label><input id="password" name="password" type="password" autoComplete="new-password" minLength={12} placeholder="At least 12 characters" required /><small>Use a unique password with at least 12 characters.</small></div>
     <label className="checkbox-line"><input type="checkbox" name="attendance_commitment" required /><span>I expect to attend F&MHacks in person on November 7–8. I understand I may be waitlisted if all 75 places are filled.</span></label>
     <button type="submit" className="button button-dark full-width" disabled={emailsDiffer}>Create account <span aria-hidden="true">→</span></button>
-    <p className="form-footnote">Registration closes Nov 4 at 11:59 p.m. ET. We’ll never display your email or T-shirt size publicly.</p>
+    <p className="form-footnote">Registration closes Nov 3 at 11:59 p.m. ET. We’ll never display your email or T-shirt size publicly.</p>
   </form>;
 }

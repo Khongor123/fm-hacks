@@ -1,10 +1,10 @@
 # F&MHacks 2026
 
-The first release of the F&MHacks website includes event information, email/password registration, a 75-place waitlist, and a private organizer roster. Team codes and project submissions are planned for later releases.
+The F&MHacks website includes event information, email/password registration, a 75-place waitlist, a signed-in dashboard, teams by code, and a private organizer roster. Project submissions are planned for a later release.
 
 ## Run locally
 
-1. Create a Supabase project. In its SQL Editor, run [`supabase/schema.sql`](supabase/schema.sql). For a project that already used the earlier schema, run [`supabase/migrations/20261011_remove_email_confirmation.sql`](supabase/migrations/20261011_remove_email_confirmation.sql) instead.
+1. Create a Supabase project. In its SQL Editor, run [`supabase/schema.sql`](supabase/schema.sql). For an existing project, run [`supabase/migrations/20261011_remove_email_confirmation.sql`](supabase/migrations/20261011_remove_email_confirmation.sql) if you have not applied it yet, then run [`supabase/migrations/20261011_dashboard_teams.sql`](supabase/migrations/20261011_dashboard_teams.sql).
 2. In **Supabase → Authentication → Sign In / Providers → Email**, keep email/password signup enabled and turn **Confirm Email** off. Set the minimum password length to 12. Apply the migration in step 1 **before** turning off Confirm Email on an existing project.
 3. Create `.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. The last variable is used for password reset links.
 4. Run `npm install`, then `npm run dev`.
@@ -19,9 +19,11 @@ If that account held one of the 75 participant places, promote the earliest wait
 
 ## Deploy
 
-Connect this repository to Vercel as a Next.js project. Set the three environment variables above, using the production origin for `NEXT_PUBLIC_SITE_URL`. Set Supabase's Site URL to the production origin. Confirmation callbacks are no longer needed.
+Run the database migrations **before** deploying the updated website. Connect this repository to Vercel as a Next.js project. Set the three environment variables above, using the production origin for `NEXT_PUBLIC_SITE_URL`. Set Supabase's Site URL to the production origin. Confirmation callbacks are no longer needed.
 
-Registration closes **November 4, 2026 at 11:59 p.m. Eastern**. The server action and database trigger reject late signups. Students are assigned confirmed or waitlisted status under a database lock so simultaneous signups cannot exceed 75 seats. The home-page countdown targets the **November 7, 2026 at 9:00 a.m. Eastern** kickoff.
+Registration closes **November 3, 2026 at 11:59 p.m. Eastern**. The server action and database trigger reject late signups. Students are assigned confirmed or waitlisted status under a database lock so simultaneous signups cannot exceed 75 seats. The home-page countdown targets the **November 7, 2026 at 9:00 a.m. Eastern** kickoff.
+
+Confirmed participants can create or join one team of up to four people using a 12-character code. Members can leave before the registration deadline. If the creator leaves, the earliest remaining member becomes creator; an empty team is deleted. Database functions enforce the team limit and deadline even if requests bypass the website. Team names and member names are visible only to members of that team through `get_my_team()`.
 
 ## Email and account limits
 

@@ -21,7 +21,7 @@ export default async function Register({ searchParams }: { searchParams: Promise
       <div className="form-heading">
         <span className="form-step">01 / YOUR DETAILS</span>
         <h2>{open ? "Create your account" : "Registration is closed"}</h2>
-        <p>{open ? "All fields are required. Already registered?" : "Registration closed November 4 at 11:59 p.m. Eastern."} {open && <Link href="/login">Log in</Link>}</p>
+        <p>{open ? "All fields are required. Already registered?" : "Registration closed November 3 at 11:59 p.m. Eastern."} {open && <Link href="/login">Log in</Link>}</p>
       </div>
       <FormNotice error={params.error} />
       {params.confirmation_required && <p role="alert" className="form-notice error">Your account was created, but Supabase still requires email confirmation. Ask an organizer to turn off Confirm Email in Supabase before logging in.</p>}

@@ -40,7 +40,7 @@ export async function register(data: FormData) {
   });
   if (error) errorRedirect("/register", "We could not create your account. Check your details or try logging in.");
   if (!signup.session) redirect("/register?confirmation_required=1");
-  redirect("/account");
+  redirect("/#dashboard");
 }
 
 export async function login(data: FormData) {
@@ -49,7 +49,7 @@ export async function login(data: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) errorRedirect("/login", "Email or password is incorrect.");
-  redirect("/account");
+  redirect("/#dashboard");
 }
 
 export async function logout() {

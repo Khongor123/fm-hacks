@@ -1,9 +1,23 @@
 import Link from "next/link";
 import { Countdown } from "@/components/countdown";
+import { ParticipantDashboard, type Team } from "@/components/participant-dashboard";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ team_error?: string; team_notice?: string }> }) {
+  const params = await searchParams;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase.from("profiles").select("full_name,registration_status,admin").eq("id", user.id).single()
+    : { data: null };
+  const { data: team, error: teamError } = profile?.registration_status === "confirmed" && !profile.admin
+    ? await supabase.rpc("get_my_team")
+    : { data: null, error: null };
+
   return <main>
-    <section className="hero">
+    {profile ? <ParticipantDashboard profile={profile} team={team as Team | null} teamLoadError={!!teamError} notice={params.team_notice} error={params.team_error} />
+      : user ? <section className="participant-home"><div className="shell"><h1>Account setup is finishing.</h1><p>Refresh this page in a moment. If this persists, contact the organizers.</p><Link href="/account" className="button button-ghost">My account</Link></div></section>
+      : <section className="hero">
       <div className="shell hero-grid">
         <div className="hero-content">
           <p className="eyebrow"><span className="eyebrow-dot" /> THE F&M CS CLUB PRESENTS</p>
@@ -14,8 +28,8 @@ export default function Home() {
         </div>
         <div className="hero-aside"><div className="orbit-art" aria-hidden="true"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orbit orbit-three"/><div className="orbit-center">&</div><span className="orbit-star star-one">✳</span><span className="orbit-star star-two">✳</span><span className="orbit-star star-three">✦</span></div><Countdown /></div>
       </div>
-      <div className="hero-bottom shell"><span>Registration closes Nov 4 at 11:59 p.m. ET</span><span>OPEN TO ALL F&M MAJORS</span></div>
-    </section>
+      <div className="hero-bottom shell"><span>Registration closes Nov 3 at 11:59 p.m. ET</span><span>OPEN TO ALL F&M MAJORS</span></div>
+    </section>}
 
     <section className="section intro" id="about"><div className="shell two-column"><div><p className="section-kicker">01 / ABOUT THE HACKATHON</p><h2>Good ideas don’t<br/>wait for permission.</h2></div><div className="intro-copy"><p>F&MHacks is a 24-hour chance to make something with people who care about ideas. Bring your curiosity, find a team, and turn a small spark into a project you can show.</p><p>Whether you code, design, write, research, or present, there is a place for you. Teams can have up to four members, and each project needs at least one person who can program.</p><div className="pill-row"><span>Free to join</span><span>Free participant T-shirt</span><span>Food & snacks</span></div></div></div></section>
 
@@ -25,6 +39,6 @@ export default function Home() {
 
     <section className="section rules-section" id="rules"><div className="shell"><div className="section-heading"><div><p className="section-kicker">04 / THE GROUND RULES</p><h2>Make it yours.</h2></div><p>We want to see what your team can build during the event.</p></div><div className="rules-grid"><div><span>01</span><p>Write your project code during the hackathon. No prebuilt project submissions.</p></div><div><span>02</span><p>Software projects only; no hardware required or accepted.</p></div><div><span>03</span><p>Disclose where and how you used AI. A single prompt alone is not a finished project.</p></div><div><span>04</span><p>You can discuss ideas with other teams, but direct project work comes from your own team.</p></div></div></div></section>
 
-    <section className="cta-section"><div className="shell cta-inner"><div><p className="section-kicker">READY TO MAKE SOMETHING?</p><h2>Your next idea<br/>starts here.</h2><p>Seats are limited to 75 students. Register with your F&M email by November 4.</p></div><Link href="/register" className="button button-light">Save your spot <span aria-hidden="true">↗</span></Link></div></section>
+    <section className="cta-section"><div className="shell cta-inner"><div><p className="section-kicker">READY TO MAKE SOMETHING?</p><h2>Your next idea<br/>starts here.</h2><p>{user ? "Your F&MHacks details and team are at the top of this page." : "Seats are limited to 75 students. Register with your F&M email by November 3."}</p></div><Link href={user ? "/#dashboard" : "/register"} className="button button-light">{user ? "Back to dashboard" : "Save your spot"} <span aria-hidden="true">↗</span></Link></div></section>
   </main>;
 }

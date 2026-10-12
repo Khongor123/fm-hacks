@@ -12,7 +12,7 @@ export async function SiteHeader() {
           <Link href="/#about">About</Link>
           <Link href="/#schedule">Schedule</Link>
           <Link href="/#rules">Rules</Link>
-          {user ? <Link href="/account" className="nav-button">My account</Link> : <Link href="/register" className="nav-button">Register <span aria-hidden="true">↗</span></Link>}
+          {user ? <Link href="/#dashboard" className="nav-button">Dashboard</Link> : <Link href="/register" className="nav-button">Register <span aria-hidden="true">↗</span></Link>}
         </nav>
       </div>
     </header>
