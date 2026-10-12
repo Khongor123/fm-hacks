@@ -146,6 +146,9 @@ a { color: inherit; text-decoration: none; }
 .field input:focus, .field select:focus { border: 2px solid var(--true-blue); padding-inline: 12px; }
 .field input::placeholder { color: #7a8087; }
 .field small { color: var(--muted); font-size: 11px; }
+.field input[aria-invalid="true"] { border-color: #b94a3b; }
+.field small[role="alert"] { color: #873724; }
+.button:disabled { cursor: not-allowed; opacity: .55; }
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
 .field-label-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .field-label-row a { font-size: 11px; }

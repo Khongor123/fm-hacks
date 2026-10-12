@@ -17,6 +17,7 @@ export async function register(data: FormData) {
   const fullName = value(data, "full_name");
   const grade = value(data, "grade");
   const email = value(data, "email").toLowerCase();
+  const repeatedEmail = value(data, "repeat_email").toLowerCase();
   const password = String(data.get("password") ?? "");
   const tshirtSize = value(data, "tshirt_size");
   const committed = data.get("attendance_commitment") === "on";
@@ -24,21 +25,22 @@ export async function register(data: FormData) {
   if (fullName.length < 2 || fullName.length > 120) errorRedirect("/register", "Enter your full name.");
   if (!["first-year", "sophomore", "junior", "senior"].includes(grade)) errorRedirect("/register", "Choose your class year.");
   if (!/^[^@\s]+@fandm\.edu$/.test(email)) errorRedirect("/register", "Use your F&M email address.");
+  if (email !== repeatedEmail) errorRedirect("/register", "The email addresses do not match.");
   if (password.length < 12) errorRedirect("/register", "Use a password with at least 12 characters.");
   if (!["XS", "S", "M", "L", "XL", "2XL", "3XL"].includes(tshirtSize)) errorRedirect("/register", "Choose a T-shirt size.");
   if (!committed) errorRedirect("/register", "Please confirm you expect to attend.");
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data: signup, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${siteUrl()}/auth/callback?next=/account`,
       data: { full_name: fullName, grade, tshirt_size: tshirtSize, attendance_commitment: true },
     },
   });
   if (error) errorRedirect("/register", "We could not create your account. Check your details or try logging in.");
-  redirect("/register?sent=1");
+  if (!signup.session) redirect("/register?confirmation_required=1");
+  redirect("/account");
 }
 
 export async function login(data: FormData) {
@@ -46,7 +48,7 @@ export async function login(data: FormData) {
   const password = String(data.get("password") ?? "");
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) errorRedirect("/login", "Email or password is incorrect, or your email is not verified.");
+  if (error) errorRedirect("/login", "Email or password is incorrect.");
   redirect("/account");
 }
 

@@ -10,7 +10,7 @@ export default async function Admin() {
   if (!user) redirect("/login");
   const { data: me } = await supabase.from("profiles").select("admin").eq("id", user.id).single();
   if (!me?.admin) redirect("/account");
-  const { data: roster, error } = await supabase.from("profiles").select("id,full_name,email,grade,tshirt_size,registration_status,verified_at,admin").order("verified_at", { ascending: true, nullsFirst: false });
+  const { data: roster, error } = await supabase.from("profiles").select("id,full_name,email,grade,tshirt_size,registration_status,assigned_at,admin").order("assigned_at", { ascending: true, nullsFirst: false });
   const students = (roster ?? []).filter(person => !person.admin);
   const confirmed = students.filter(person => person.registration_status === "confirmed").length;
   const waitlisted = students.filter(person => person.registration_status === "waitlisted").length;
