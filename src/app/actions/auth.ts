@@ -25,7 +25,7 @@ export async function register(_previous: RegistrationState, data: FormData): Pr
   const committed = data.get("attendance_commitment") === "on";
 
   if (fullName.length < 2 || fullName.length > 120) return { error: "Enter your full name." };
-  if (!["first-year", "sophomore", "junior", "senior"].includes(grade)) return { error: "Choose your class year." };
+  if (!["First-year", "Sophomore", "Junior", "Senior"].includes(grade)) return { error: "Choose your class year." };
   if (!/^[^@\s]+@fandm\.edu$/.test(email)) return { error: "Use your F&M email address." };
   if (email !== repeatedEmail) return { error: "The email addresses do not match." };
   if (password.length < 12) return { error: "Use a password with at least 12 characters." };

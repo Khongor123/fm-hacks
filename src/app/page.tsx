@@ -38,7 +38,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
         </div>
         <div className="hero-aside"><div className="orbit-art" aria-hidden="true"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orbit orbit-three"/><div className="orbit-center">&</div><span className="orbit-star star-one">✳</span><span className="orbit-star star-two">✳</span><span className="orbit-star star-three">✦</span></div><Countdown /></div>
       </div>
-      <div className="hero-bottom shell"><span>Registration closes Nov 3 at 11:59 p.m. ET</span><span>OPEN TO ALL F&M MAJORS</span></div>
+      <div className="hero-bottom shell"><span>Registration closes Nov 3 at 11:59 p.m. ET</span><span>OPEN TO ALL F&M STUDENTS</span></div>
     </section>}
 
     <section className="section intro" id="about"><div className="shell two-column"><div><p className="section-kicker">01 / ABOUT THE HACKATHON</p><h2>Good ideas don’t<br/>wait for permission.</h2></div><div className="intro-copy"><p>F&MHacks is a 24-hour chance to make something with people who care about ideas. Bring your curiosity, find a team, and turn a small spark into a project you can show.</p><p>Whether you code, design, write, research, or present, there is a place for you. Teams can have up to four members, and each project needs at least one person who can program.</p><div className="pill-row"><span>Free to join</span><span>Free participant T-shirt</span><span>Food & snacks</span></div></div></div></section>
