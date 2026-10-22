@@ -83,16 +83,22 @@ a {
   letter-spacing: -0.04em;
   white-space: nowrap;
 }
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 43px;
-  height: 43px;
-  border-radius: 12px;
-  background: var(--true-blue);
-  color: var(--white);
-  font-size: 14px;
-  letter-spacing: -0.08em;
+.brand-logo {
+  position: relative;
+  display: block;
+  width: 54px;
+  height: 54px;
+  flex: none;
+  overflow: hidden;
+}
+.brand-logo img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: translate(-50%, -50%);
 }
 .brand-year {
   color: var(--muted);
@@ -1172,10 +1178,9 @@ a {
     font-size: 15px;
     gap: 8px;
   }
-  .brand-mark {
-    width: 38px;
-    height: 38px;
-    font-size: 12px;
+  .brand-logo {
+    width: 48px;
+    height: 48px;
   }
   .site-header nav {
     order: 2;
