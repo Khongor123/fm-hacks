@@ -37,7 +37,8 @@ a { color: inherit; text-decoration: none; }
 .site-header { position: relative; z-index: 10; background: var(--white); border-bottom: 1px solid var(--soft-line); }
 .nav-inner { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
 .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--heritage-navy); font-size: 17px; font-weight: 700; letter-spacing: -.04em; white-space: nowrap; }
-.brand-mark { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 12px; background: var(--true-blue); color: var(--white); font-size: 14px; letter-spacing: -.08em; }
+.brand-logo { position: relative; display: block; width: 54px; height: 54px; flex: none; overflow: hidden; }
+.brand-logo img { position: absolute; top: 50%; left: 50%; display: block; width: 100%; height: auto; transform: translate(-50%, -50%); }
 .brand-year { color: var(--muted); font-weight: 500; }
 .site-header nav { display: flex; align-items: center; gap: 30px; font-size: 13px; font-weight: 600; }
 .site-header nav > a:not(.nav-button) { color: var(--printers-ink); }
@@ -236,7 +237,7 @@ a { color: inherit; text-decoration: none; }
   .shell { width: min(100% - 34px, 1200px); }
   .nav-inner { min-height: 72px; flex-wrap: wrap; gap: 0; padding-block: 13px; }
   .brand { font-size: 15px; gap: 8px; }
-  .brand-mark { width: 38px; height: 38px; font-size: 12px; }
+  .brand-logo { width: 48px; height: 48px; }
   .site-header nav { order: 2; width: 100%; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--soft-line); }
   .site-header nav > a:not(.nav-button) { font-size: 12px; }
   .nav-button { min-height: 38px; padding: 9px 13px; font-size: 11px; }
