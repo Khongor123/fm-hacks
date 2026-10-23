@@ -9,6 +9,7 @@ import { EventDashboard } from "@/components/event-dashboard";
 import { EventBoundary } from "@/components/event-boundary";
 import { EVENT_DAY_START, type Submission } from "@/lib/event";
 import { getEventNow } from "@/lib/event-clock";
+import { CAPACITY } from "@/lib/config";
 
 export default async function Home({
   searchParams,
@@ -95,6 +96,7 @@ export default async function Home({
               <p className="hero-description">
                 One campus. One day and night. A room full of ideas waiting to
                 become real. Join students across every major for F&MHacks 2026.
+                Sign up by October 28 to get a free T-shirt.
               </p>
               <div className="hero-actions">
                 <Link href="/register" className="button button-primary">
@@ -162,7 +164,7 @@ export default async function Home({
             </p>
             <div className="pill-row">
               <span>Free to join</span>
-              <span>Free participant T-shirt</span>
+              <span>Free T-shirt for sign-ups by Oct 28</span>
               <span>Food & snacks</span>
             </div>
           </div>
@@ -303,7 +305,7 @@ export default async function Home({
             <p>
               {user
                 ? "Your F&MHacks details and team are at the top of this page."
-                : "Seats are limited to 75 students. Register with your F&M email by November 3."}
+                : `Seats are limited to ${CAPACITY} students. Register with your F&M email by November 3.`}
             </p>
           </div>
           <Link

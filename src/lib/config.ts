@@ -1,7 +1,7 @@
 export const REGISTRATION_DEADLINE = "2026-11-04T00:00:00-05:00";
 export const EVENT_START = "2026-11-07T09:00:00-05:00";
 export const EVENT_END = "2026-11-08T13:30:00-05:00";
-export const CAPACITY = 75;
+export const CAPACITY = 50;
 
 export function registrationOpen(now = Date.now()) {
   return now < new Date(REGISTRATION_DEADLINE).getTime();

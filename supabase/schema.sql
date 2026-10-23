@@ -48,12 +48,12 @@ as $$
 declare
   v_count integer;
 begin
-  -- Serializes seat assignment so concurrent signups cannot pass 75.
+  -- Serializes seat assignment so concurrent signups cannot pass 50.
   perform pg_advisory_xact_lock(20261107);
   select count(*) into v_count from public.profiles
     where registration_status = 'confirmed';
   update public.profiles
-    set registration_status = case when v_count < 75 then 'confirmed' else 'waitlisted' end,
+    set registration_status = case when v_count < 50 then 'confirmed' else 'waitlisted' end,
         assigned_at = clock_timestamp()
     where id = p_user_id and registration_status = 'pending_assignment';
 end;
