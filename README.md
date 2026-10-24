@@ -4,8 +4,8 @@ The F&MHacks website includes event information, email/password registration, 50
 
 ## Run locally
 
-1. Create a Supabase project. In its SQL Editor, run [`supabase/schema.sql`](supabase/schema.sql). For an existing project, run [`supabase/migrations/20261011_remove_email_confirmation.sql`](supabase/migrations/20261011_remove_email_confirmation.sql) if you have not applied it yet, then run [`supabase/migrations/20261011_dashboard_teams.sql`](supabase/migrations/20261011_dashboard_teams.sql), followed by [`supabase/migrations/20261011_event_submissions.sql`](supabase/migrations/20261011_event_submissions.sql) and [`supabase/migrations/20261023_limit_registration_to_50.sql`](supabase/migrations/20261023_limit_registration_to_50.sql). For a new project, run `schema.sql`, then the event submissions migration.
-2. In **Supabase → Authentication → Sign In / Providers → Email**, keep email/password signup enabled and turn **Confirm Email** off. Set the minimum password length to 12. Apply the migration in step 1 **before** turning off Confirm Email on an existing project.
+1. For a new Supabase project, run [`supabase/schema.sql`](supabase/schema.sql) in its SQL Editor, followed by [`supabase/migrations/20261011_event_submissions.sql`](supabase/migrations/20261011_event_submissions.sql). For an existing project, apply any missing historical migrations in order: [`remove_email_confirmation`](supabase/migrations/20261011_remove_email_confirmation.sql), [`dashboard_teams`](supabase/migrations/20261011_dashboard_teams.sql), and [`event_submissions`](supabase/migrations/20261011_event_submissions.sql). Then apply [`limit_registration_to_50`](supabase/migrations/20261023_limit_registration_to_50.sql) and [`six_character_team_codes`](supabase/migrations/20261023_six_character_team_codes.sql).
+2. In **Supabase → Authentication → Sign In / Providers → Email**, keep email/password signup enabled and turn **Confirm Email** off. Set the minimum password length to 8. Apply the migration in step 1 **before** turning off Confirm Email on an existing project.
 3. Create `.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. The last variable is used for password reset links.
 4. Run `npm install`, then `npm run dev`.
 
@@ -23,7 +23,7 @@ Run the database migrations **before** deploying the updated website. Connect th
 
 Registration closes **November 3, 2026 at 11:59 p.m. Eastern**. The server action and database trigger reject late signups. Students are assigned confirmed or waitlisted status under a database lock so simultaneous signups cannot exceed 50 seats. Existing confirmed registrations are preserved when the new capacity migration runs; if more than 50 students are already confirmed, organizers must review those registrations. The home-page countdown targets the **November 7, 2026 at 9:00 a.m. Eastern** kickoff.
 
-Confirmed participants can create or join one team of up to four people using a 12-character code. Members can leave before the registration deadline. If the creator leaves, the earliest remaining member becomes creator; an empty team is deleted. Database functions enforce the team limit and deadline even if requests bypass the website. Team names and member names are visible only to members of that team through `get_my_team()`.
+Confirmed participants can create or join one team of up to four people using a 6-character code. Members can leave before the registration deadline. If the creator leaves, the earliest remaining member becomes creator; an empty team is deleted. Database functions enforce the team limit and deadline even if requests bypass the website. Team names and member names are visible only to members of that team through `get_my_team()`. Applying the six-character-code migration gives existing teams new codes; members must share their new code with anyone joining afterward.
 
 ## Email and account limits
 

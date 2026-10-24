@@ -118,7 +118,7 @@ for each row execute function public.prevent_email_change();
 create table if not exists public.teams (
   id uuid primary key default gen_random_uuid(),
   name text not null check (char_length(trim(name)) between 2 and 40),
-  code text not null unique check (code ~ '^[0-9A-F]{12}$'),
+  code text not null unique check (code ~ '^[0-9A-F]{6}$'),
   created_by uuid references public.profiles(id) on delete set null,
   created_at timestamptz not null default now()
 );
@@ -197,7 +197,7 @@ begin
   end if;
 
   for attempt in 1..8 loop
-    v_code := upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 12));
+    v_code := upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 6));
     insert into public.teams (name, code, created_by)
       values (v_name, v_code, v_user_id)
       on conflict (code) do nothing
@@ -233,7 +233,7 @@ begin
   if exists (select 1 from public.team_members where user_id = v_user_id) then
     raise exception 'Leave your current team before joining another.';
   end if;
-  if v_code !~ '^[0-9A-F]{12}$' then raise exception 'Enter a valid 12-character team code.'; end if;
+  if v_code !~ '^[0-9A-F]{6}$' then raise exception 'Enter a valid 6-character team code.'; end if;
 
   select id into v_team_id from public.teams where code = v_code for update;
   if v_team_id is null then raise exception 'Team code not found.'; end if;
