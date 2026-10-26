@@ -527,6 +527,67 @@ a {
   font-size: 14px;
   line-height: 1.6;
 }
+.prizes-section {
+  padding-top: 0;
+  background: var(--white);
+}
+.prize-card {
+  min-height: 385px;
+}
+.prize-model {
+  position: relative;
+  width: 100%;
+  height: 265px;
+  margin: 0 0 6px;
+}
+.prize-model canvas,
+.prize-model-still {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.prize-model-still {
+  position: absolute;
+  inset: 0;
+  object-fit: contain;
+}
+.prize-model-draggable {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.prize-model-draggable.is-dragging {
+  cursor: grabbing;
+}
+.prize-model-draggable:focus-visible {
+  outline: 2px solid var(--true-blue);
+  outline-offset: 4px;
+}
+.product-spin {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.product-spin.is-dragging {
+  cursor: grabbing;
+}
+.product-spin video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(1.04);
+  pointer-events: none;
+}
+.echo-360 video {
+  -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 86%, transparent 98%);
+}
+.product-spin:focus-visible {
+  outline: 2px solid var(--true-blue);
+  outline-offset: 4px;
+}
+.prize-card h3 {
+  margin-top: auto;
+}
 .schedule-section {
   background: var(--limestone);
 }

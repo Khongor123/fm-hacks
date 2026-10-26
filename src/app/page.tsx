@@ -10,6 +10,8 @@ import { EventBoundary } from "@/components/event-boundary";
 import { EVENT_DAY_START, type Submission } from "@/lib/event";
 import { getEventNow } from "@/lib/event-clock";
 import { CAPACITY } from "@/lib/config";
+import { PrizeModel } from "@/components/prize-model";
+import { ProductSpin } from "@/components/product-spin";
 
 export default async function Home({
   searchParams,
@@ -96,7 +98,7 @@ export default async function Home({
               <p className="hero-description">
                 One campus. One day and night. A room full of ideas waiting to
                 become real. Join students across every major for F&MHacks 2026.
-                Sign up by October 28 to get a free T-shirt.
+                No experience needed. Plus, get a free t-shirt.
               </p>
               <div className="hero-actions">
                 <Link href="/register" className="button button-primary">
@@ -164,7 +166,7 @@ export default async function Home({
             </p>
             <div className="pill-row">
               <span>Free to join</span>
-              <span>Free T-shirt for sign-ups by Oct 28</span>
+              <span>Free T-shirt</span>
               <span>Food & snacks</span>
             </div>
           </div>
@@ -210,10 +212,42 @@ export default async function Home({
         </div>
       </section>
 
+      <section className="section prizes-section" id="prizes">
+        <div className="shell">
+          <div className="section-heading">
+            <div>
+              <p className="section-kicker">03 / PRIZES</p>
+              <h2>Build something. Win something.</h2>
+            </div>
+            <p>One prize for each track. Make your idea count.</p>
+          </div>
+          <div className="track-grid prize-grid">
+            <article className="track-card prize-card">
+              <span className="track-number">01 / AI</span>
+              <PrizeModel />
+              <h3>Google Fitbit Air</h3>
+              <p>Obsidian</p>
+            </article>
+            <article className="track-card prize-card">
+              <span className="track-number">02 / SOCIAL GOOD</span>
+              <ProductSpin src="/echo-dot-360.mp4" poster="/echo-dot-poster.png" label="Amazon Echo Dot" className="echo-360" />
+              <h3>Amazon Echo Dot</h3>
+              <p>5th generation · Charcoal</p>
+            </article>
+            <article className="track-card prize-card">
+              <span className="track-number">03 / CREATIVITY</span>
+              <ProductSpin src="/instax-mini-12-360.mp4" poster="/instax-mini-12-poster.png" label="Fujifilm instax mini 12" className="instax-360" />
+              <h3>Fujifilm instax mini 12</h3>
+              <p>Instant Camera · Lilac Purple</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className="section schedule-section" id="schedule">
         <div className="shell two-column">
           <div>
-            <p className="section-kicker">03 / THE PLAN</p>
+            <p className="section-kicker">04 / THE PLAN</p>
             <h2>
               24 hours.
               <br />A lot can happen.
@@ -258,7 +292,7 @@ export default async function Home({
         <div className="shell">
           <div className="section-heading">
             <div>
-              <p className="section-kicker">04 / THE GROUND RULES</p>
+              <p className="section-kicker">05 / THE GROUND RULES</p>
               <h2>Make it yours.</h2>
             </div>
             <p>We want to see what your team can build during the event.</p>
