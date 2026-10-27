@@ -25,10 +25,10 @@ export async function register(_previous: RegistrationState, data: FormData): Pr
   const committed = data.get("attendance_commitment") === "on";
 
   if (fullName.length < 2 || fullName.length > 120) return { error: "Enter your full name." };
-  if (!["First-year", "Sophomore", "Junior", "Senior"].includes(grade)) return { error: "Choose your class year." };
+  if (!["first-year", "sophomore", "junior", "senior"].includes(grade)) return { error: "Choose your class year." };
   if (!/^[^@\s]+@fandm\.edu$/.test(email)) return { error: "Use your F&M email address." };
   if (email !== repeatedEmail) return { error: "The email addresses do not match." };
-  if (password.length < 12) return { error: "Use a password with at least 12 characters." };
+  if (password.length < 8) return { error: "Use a password with at least 8 characters." };
   if (!["XS", "S", "M", "L", "XL", "2XL", "3XL"].includes(tshirtSize)) return { error: "Choose a T-shirt size." };
   if (!committed) return { error: "Please confirm you expect to attend." };
 
@@ -84,7 +84,7 @@ export async function requestPasswordReset(data: FormData) {
 
 export async function updatePassword(data: FormData) {
   const password = String(data.get("password") ?? "");
-  if (password.length < 12) errorRedirect("/reset-password", "Use a password with at least 12 characters.");
+  if (password.length < 8) errorRedirect("/reset-password", "Use a password with at least 8 characters.");
   const supabase = await createClient();
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) errorRedirect("/reset-password", "Your reset link expired. Request a new one.");

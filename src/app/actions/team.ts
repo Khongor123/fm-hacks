@@ -11,7 +11,7 @@ const knownErrors = new Set([
   "Leave your current team before creating another.",
   "Leave your current team before joining another.",
   "Could not create a team code. Try again.",
-  "Enter a valid 12-character team code.",
+  "Enter a valid 6-character team code.",
   "Team code not found.",
   "This team is full.",
   "You are not on a team.",
@@ -39,7 +39,7 @@ export async function createTeam(formData: FormData) {
 
 export async function joinTeam(formData: FormData) {
   const code = String(formData.get("team_code") ?? "").trim().toUpperCase();
-  if (!/^[0-9A-F]{12}$/.test(code)) teamError("Enter a valid 12-character team code.");
+  if (!/^[0-9A-F]{6}$/.test(code)) teamError("Enter a valid 6-character team code.");
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
