@@ -37,7 +37,7 @@ const cornerSegments = corners.flatMap(({ name, start }) =>
   }),
 );
 
-export function HeroLogo() {
+export function HeroLogo({ serverNow }: { serverNow?: number }) {
   const blockRef = useRef<HTMLDivElement>(null);
   const rotation = useRef({ x: -8, y: 0 });
   const drag = useRef<{ pointerId: number; x: number; y: number } | null>(null);
@@ -197,7 +197,7 @@ export function HeroLogo() {
             priority
             draggable={false}
           />
-          <Countdown />
+          <Countdown serverNow={serverNow} />
         </div>
       </div>
     </div>

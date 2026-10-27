@@ -22,7 +22,7 @@ function teamError(message: string, code?: string): never {
   const copy = code === "23505"
     ? "You are already on a team. Refresh this page to see it."
     : knownErrors.has(message) ? message : "Team action failed. Please try again.";
-  redirect(`/?team_error=${encodeURIComponent(copy)}#dashboard`);
+  redirect(`/team?team_error=${encodeURIComponent(copy)}`);
 }
 
 export async function createTeam(formData: FormData) {
@@ -34,7 +34,8 @@ export async function createTeam(formData: FormData) {
   const { error } = await supabase.rpc("create_team", { p_name: name });
   if (error) teamError(error.message, error.code);
   revalidatePath("/");
-  redirect("/?team_notice=created#dashboard");
+  revalidatePath("/team");
+  redirect("/team?team_notice=created");
 }
 
 export async function joinTeam(formData: FormData) {
@@ -46,7 +47,8 @@ export async function joinTeam(formData: FormData) {
   const { error } = await supabase.rpc("join_team", { p_code: code });
   if (error) teamError(error.message, error.code);
   revalidatePath("/");
-  redirect("/?team_notice=joined#dashboard");
+  revalidatePath("/team");
+  redirect("/team?team_notice=joined");
 }
 
 export async function leaveTeam() {
@@ -56,5 +58,6 @@ export async function leaveTeam() {
   const { error } = await supabase.rpc("leave_team");
   if (error) teamError(error.message, error.code);
   revalidatePath("/");
-  redirect("/?team_notice=left#dashboard");
+  revalidatePath("/team");
+  redirect("/team?team_notice=left");
 }

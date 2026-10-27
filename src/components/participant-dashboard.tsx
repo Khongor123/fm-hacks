@@ -1,8 +1,5 @@
 import Link from "next/link";
-import { createTeam, joinTeam, leaveTeam } from "@/app/actions/team";
-import { teamChangesOpen } from "@/lib/config";
-import { Countdown } from "@/components/countdown";
-import { CopyTeamCode } from "@/components/copy-team-code";
+import { HeroLogo } from "@/components/hero-logo";
 import { FormNotice } from "@/components/form-notice";
 
 export type Team = {
@@ -30,7 +27,6 @@ export function ParticipantDashboard({ profile, team, teamLoadError, now, notice
   notice?: string;
   error?: string;
 }) {
-  const open = teamChangesOpen(now);
   const canJoinTeams = profile.registration_status === "confirmed" && !profile.admin;
   const firstName = profile.full_name.trim().split(/\s+/)[0];
   const success = notice === "created" ? "Your team is ready. Share its code with your teammates."
@@ -56,23 +52,16 @@ export function ParticipantDashboard({ profile, team, teamLoadError, now, notice
         <p>Saturday, November 7 · 9:00 a.m. · Stager Auditorium</p>
         {profile.admin && <Link href="/admin" className="text-link">Open organizer roster ↗</Link>}
       </section>
-      <Countdown serverNow={now} />
+      <section className="participant-panel participant-team" id="my-team">
+        <span className="card-label">YOUR TEAM</span>
+        <h2>{team ? team.name : "Build your crew."}</h2>
+        {teamLoadError ? <p role="alert">Team details are unavailable right now.</p>
+        : !canJoinTeams ? <p>{profile.admin ? "Organizer accounts do not join participant teams." : "Teams are available to confirmed participants."}</p>
+        : team ? <><p>{team.members.length} of 4 places filled</p><p>Share your code and build with your crew.</p></>
+        : <p>Create a team or join one with a code from a teammate.</p>}
+        {canJoinTeams && <Link href="/team" className="text-link">{team ? "View and manage team" : "Create or join a team"} ↗</Link>}
+      </section>
+      <div className="participant-panel participant-logo-panel"><HeroLogo serverNow={now} /></div>
     </div>
-
-    <section className="participant-panel team-panel" id="my-team">
-      <div className="team-panel-heading"><div><span className="card-label">YOUR TEAM</span><h2>{team ? team.name : "Build your crew."}</h2></div><span className="team-cutoff">Team changes close Nov 3 at 11:59 p.m. ET</span></div>
-      {teamLoadError ? <p role="alert">Team tools are being set up. Please try again later.</p>
-      : !canJoinTeams ? <p>{profile.admin ? "Organizer accounts do not join participant teams." : "Team creation and joining are available to confirmed participants."}</p>
-      : team ? <>
-        <div className="team-code-row"><div><span>TEAM CODE</span><strong>{team.code}</strong></div><CopyTeamCode code={team.code} /></div>
-        <p>Share this code with teammates. A team can have up to four members.</p>
-        <ol className="team-member-list">{team.members.map(member => <li key={member.id}><span>{member.full_name}</span>{member.id === team.created_by && <small>Creator</small>}</li>)}</ol>
-        <p className="team-count">{team.members.length} of 4 places filled</p>
-        {open && <form action={leaveTeam}><button type="submit" className="text-link">Leave team</button></form>}
-      </> : open ? <div className="team-actions">
-        <form action={createTeam} className="team-action-card"><h3>Create a team</h3><p>Give your team a name, then share its code.</p><div className="field"><label htmlFor="team_name">Team name</label><input id="team_name" name="team_name" minLength={2} maxLength={40} placeholder="Your team name" required /></div><button type="submit" className="button button-dark">Create team <span aria-hidden="true">→</span></button></form>
-        <form action={joinTeam} className="team-action-card"><h3>Join a team</h3><p>Ask a teammate for their 6-character code.</p><div className="field"><label htmlFor="team_code">Team code</label><input id="team_code" name="team_code" minLength={6} maxLength={6} placeholder="6-character code" autoCapitalize="characters" required /></div><button type="submit" className="button button-ghost">Join team <span aria-hidden="true">→</span></button></form>
-      </div> : <p>Team changes closed November 3 at 11:59 p.m. Eastern.</p>}
-    </section>
   </div></section>;
 }

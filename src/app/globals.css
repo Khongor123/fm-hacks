@@ -1206,13 +1206,23 @@ a {
 }
 .participant-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 425px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
   gap: 16px;
-  margin-bottom: 16px;
 }
-.participant-grid .countdown {
-  width: 100%;
+.participant-logo-panel {
+  display: grid;
+  place-items: center;
+  min-height: 400px;
+  padding: 0;
+  background: radial-gradient(circle at 50% 42%, #dbeafb, var(--page-canvas) 75%);
+}
+.participant-logo-panel .hero-logo-scene {
+  --hero-logo-size: clamp(175px, 18vw, 220px);
+  min-height: 400px;
+}
+.participant-logo-panel .hero-logo-ground-shadow {
+  bottom: 25px;
 }
 .participant-panel {
   padding: 28px;
@@ -1240,6 +1250,13 @@ a {
 .participant-status .text-link {
   display: inline-block;
   margin-top: 8px;
+}
+.participant-team h2 {
+  margin-top: 25px;
+}
+.participant-team .text-link {
+  display: inline-block;
+  margin-top: 12px;
 }
 .team-panel-heading {
   display: flex;
@@ -1354,6 +1371,9 @@ a {
   }
   .participant-grid {
     grid-template-columns: 1fr 1fr;
+  }
+  .participant-logo-panel {
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 760px) {
@@ -1532,8 +1552,11 @@ a {
   .team-actions {
     grid-template-columns: 1fr;
   }
-  .participant-grid .countdown {
-    max-width: none;
+  .participant-logo-panel {
+    grid-column: auto;
+  }
+  .participant-logo-panel .hero-logo-scene {
+    --hero-logo-size: min(225px, 62vw);
   }
   .team-panel-heading {
     flex-direction: column;
@@ -1851,6 +1874,9 @@ a {
 :root[data-theme="dark"] .roster-wrap,
 :root[data-theme="dark"] .participant-panel {
   background: #17263a;
+}
+:root[data-theme="dark"] .participant-logo-panel {
+  background: radial-gradient(circle at 50% 42%, #173b68, #17263a 75%);
 }
 :root[data-theme="dark"] .hero-logo-front .countdown {
   background: transparent;
