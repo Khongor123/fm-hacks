@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
 import { MAX_SLIDE_BYTES, SLIDE_BUCKET, TRACKS, type Submission } from "@/lib/event";
 import { SlideDownload } from "@/components/slide-download";
+import { useDeadlineRemaining } from "@/components/use-deadline-remaining";
 
 type FormState = {
   title: string; description: string; track: string; github_url: string;
@@ -82,10 +83,12 @@ async function uploadSlide(file: File, path: string, onProgress: (percent: numbe
   window.sessionStorage.removeItem(key);
 }
 
-export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn }: {
-  initial: Submission | null; ownerId: string; ownerKind: "team" | "solo"; open: boolean; checkedIn: boolean;
+export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, serverNow }: {
+  initial: Submission | null; ownerId: string; ownerKind: "team" | "solo"; open: boolean; checkedIn: boolean; serverNow: number;
 }) {
   const router = useRouter();
+  const remaining = useDeadlineRemaining(serverNow);
+  const editable = open && remaining > 0;
   const [submission, setSubmission] = useState(initial);
   const [form, setForm] = useState<FormState>(() => initialForm(initial));
   const [file, setFile] = useState<File | null>(null);
@@ -95,10 +98,10 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn }:
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => setForm(previous => ({ ...previous, [key]: value }));
-  const state = !open ? "Deadline passed" : submission?.status === "submitted" ? "Submitted" : "Draft";
+  const state = !editable ? "Deadline passed" : submission?.status === "submitted" ? "Submitted" : "Draft";
 
   async function save(final: boolean) {
-    if (!checkedIn || !open || busy) return;
+    if (!checkedIn || !editable || busy) return;
     setBusy(true); setMessage(""); setError(""); setProgress(null);
     const supabase = createClient();
     let newPath: string | null = null;
@@ -159,7 +162,7 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn }:
 
   return <section className="participant-panel submission-panel" id="submission">
     <div className="submission-heading"><div><span className="card-label">PROJECT SUBMISSION</span><h2>{ownerKind === "team" ? "One submission for your team." : "Your solo submission."}</h2></div><span className={`submission-state ${state.toLowerCase().replaceAll(" ", "-")}`}>{state}</span></div>
-    {!open ? <><p>The deadline has passed. Your submission is view only; the repository link can still be corrected.</p>{submission ? <>
+    {!editable ? <><p>The deadline has passed. Your submission is view only; the repository link can still be corrected.</p>{submission ? <>
         <dl className="submission-summary"><div><dt>Project</dt><dd>{submission.title || "Untitled draft"}</dd></div><div><dt>Description</dt><dd>{submission.description || "—"}</dd></div><div><dt>Track</dt><dd>{submission.track || "—"}</dd></div><div><dt>AI use</dt><dd>{submission.ai_level || "—"}</dd></div><div><dt>AI disclosure</dt><dd>{submission.ai_disclosure || "—"}</dd></div><div><dt>Slides</dt><dd>{submission.slide_path ? <SlideDownload path={submission.slide_path} /> : "None uploaded"}</dd></div></dl>
         {checkedIn ? <><div className="field"><label htmlFor="late_repo">GitHub repository URL</label><input id="late_repo" type="url" value={form.github_url} onChange={event => set("github_url", event.target.value)} /></div><button type="button" className="button button-dark" onClick={updateRepo} disabled={busy}>Update repository link</button></> : <p>Find an organizer to check in before correcting the repository link.</p>}
       </> : <p>No submission was saved before the deadline.</p>}</>

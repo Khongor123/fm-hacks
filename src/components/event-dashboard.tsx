@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { type Team } from "@/components/participant-dashboard";
-import { type Submission } from "@/lib/event";
+import { eventPhase, type Submission } from "@/lib/event";
 import { EventBoundary } from "@/components/event-boundary";
 import { DeadlineCountdown } from "@/components/deadline-countdown";
 import { SubmissionForm } from "@/components/submission-form";
@@ -9,7 +9,7 @@ export function EventDashboard({ profile, userId, team, submission, teamLoadErro
   profile: { full_name: string; registration_status: string; admin: boolean; checked_in_at: string | null };
   userId: string; team: Team | null; submission: Submission | null; teamLoadError: boolean; submissionLoadError: boolean; now: number;
 }) {
-  const phase = now < Date.parse("2026-11-07T10:00:00-05:00") ? "event" : now < Date.parse("2026-11-08T10:00:00-05:00") ? "submissions" : "closed";
+  const phase = eventPhase(now);
   const eligible = profile.registration_status === "confirmed" && !profile.admin;
   return <section className="participant-home event-home" id="dashboard"><EventBoundary initialPhase={phase} serverNow={now} /><div className="shell">
     <div className="participant-heading"><div><p className="section-kicker">F&MHACKS · EVENT DAY</p><h1>Let’s build, <em>{profile.full_name.trim().split(/\s+/)[0]}.</em></h1><p>Stager Auditorium · November 7–8 · All times Eastern</p></div><Link href="/account" className="button button-ghost">My account ↗</Link></div>
@@ -18,7 +18,7 @@ export function EventDashboard({ profile, userId, team, submission, teamLoadErro
       <section className="participant-panel"><span className="card-label">YOUR PEOPLE</span><h2>{team?.name || "Working solo"}</h2>{team ? <ul className="team-member-list">{team.members.map(member => <li key={member.id}>{member.full_name}</li>)}</ul> : <p>You can submit a project on your own after check-in.</p>}<p>Need help with your team or check-in? Find an organizer at Stager Auditorium.</p></section></div>
     <div className="event-details"><section className="participant-panel"><span className="card-label">PROJECT RULES</span><h2>Build it here.</h2><ul className="plain-list"><li>Write project code during the hackathon; no prebuilt submissions.</li><li>Software projects only.</li><li>Disclose where and how you used AI. A single prompt is not a finished project.</li><li>Ideas can be discussed with other teams, but direct project work must come from your own team. No outside help.</li></ul></section>
       <section className="participant-panel"><span className="card-label">GITHUB UPLOAD GUIDE</span><h2>Publish your code.</h2><ol className="plain-list"><li>Open GitHub Desktop and create a repository for your project folder.</li><li>Add your files, write a commit summary, and commit your changes.</li><li>Choose <strong>Publish repository</strong> and leave “Keep this code private” unchecked.</li><li>Copy the public repository URL into your submission.</li></ol><p>Keep passwords, API keys, and <code>.env</code> files out of the repository. <a className="text-link" href="https://docs.github.com/en/desktop/overview/creating-your-first-repository-using-github-desktop" target="_blank" rel="noreferrer">GitHub Desktop’s full guide ↗</a></p></section></div>
-    {eligible && (teamLoadError || submissionLoadError) ? <section className="participant-panel submission-panel"><h2>Submission tools are unavailable.</h2><p>Please refresh or ask an organizer for help.</p></section> : eligible ? phase === "event" ? <section className="participant-panel submission-panel"><span className="card-label">PROJECT SUBMISSION</span><h2>Submissions open at 10:00 a.m.</h2><p>Once project work begins, a checked-in team member can save a draft and upload slides here.</p></section> : <SubmissionForm initial={submission} ownerId={team?.id ?? userId} ownerKind={team ? "team" : "solo"} open={phase === "submissions"} checkedIn={!!profile.checked_in_at} />
+    {eligible && (teamLoadError || submissionLoadError) ? <section className="participant-panel submission-panel"><h2>Submission tools are unavailable.</h2><p>Please refresh or ask an organizer for help.</p></section> : eligible ? phase === "event" ? <section className="participant-panel submission-panel"><span className="card-label">PROJECT SUBMISSION</span><h2>Submissions open at 10:00 a.m.</h2><p>Once project work begins, a checked-in team member can save a draft and upload slides here.</p></section> : <SubmissionForm initial={submission} ownerId={team?.id ?? userId} ownerKind={team ? "team" : "solo"} open={phase === "submissions"} checkedIn={!!profile.checked_in_at} serverNow={now} />
       : <section className="participant-panel submission-panel"><h2>Participant submissions</h2><p>{profile.admin ? "Organizer accounts can review entries from the submissions view." : "Only confirmed participants can submit projects."}</p>{profile.admin && <Link href="/admin/submissions" className="text-link">View submissions ↗</Link>}</section>}
   </div></section>;
 }

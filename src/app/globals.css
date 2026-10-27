@@ -89,7 +89,7 @@ a {
   padding: 8px 20px 8px 32px;
   border: 1px solid rgb(4 30 66 / 10%);
   border-radius: 999px;
-  background: rgb(255 255 255 / 94%);
+  background: var(--page-canvas);
   box-shadow: 0 10px 30px rgb(4 30 66 / 12%);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -992,7 +992,7 @@ a {
 .dashboard-page {
   min-height: calc(100vh - 170px);
   padding: 74px 0 100px;
-  background: var(--white);
+  background: var(--page-canvas);
 }
 .dashboard-intro {
   margin-bottom: 32px;
@@ -1167,7 +1167,7 @@ a {
 
 .participant-home {
   padding: 67px 0 75px;
-  background: var(--limestone);
+  background: var(--page-canvas);
 }
 .participant-heading {
   display: flex;
@@ -1211,7 +1211,7 @@ a {
 }
 .participant-panel {
   padding: 28px;
-  border: 1px solid #e5e2d7;
+  border: 1px solid var(--soft-line);
   border-radius: 16px;
   background: var(--white);
 }
@@ -1361,7 +1361,7 @@ a {
   .site-header {
     padding-top: 0;
     border-bottom: 1px solid rgb(4 30 66 / 10%);
-    background: rgb(255 255 255 / 94%);
+    background: var(--page-canvas);
     box-shadow: 0 4px 16px rgb(4 30 66 / 6%);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
@@ -1763,7 +1763,7 @@ a {
 }
 :root[data-theme="dark"] .site-header .nav-inner {
   border-color: rgb(162 196 240 / 18%);
-  background: rgb(21 38 61 / 94%);
+  background: var(--page-canvas);
   box-shadow: 0 12px 32px rgb(0 0 0 / 38%);
 }
 :root[data-theme="dark"] .nav-button,
@@ -1814,9 +1814,6 @@ a {
 :root[data-theme="dark"] .prize-model {
   border-radius: 16px;
   background: radial-gradient(ellipse at center, rgb(105 158 225 / 13%), transparent 70%);
-}
-:root[data-theme="dark"] .dashboard-page {
-  background: var(--page-canvas);
 }
 :root[data-theme="dark"] .schedule-list,
 :root[data-theme="dark"] .participant-panel,
@@ -1881,7 +1878,7 @@ a {
 @media (max-width: 760px) {
   :root[data-theme="dark"] .site-header {
     border-bottom-color: rgb(162 196 240 / 18%);
-    background: rgb(21 38 61 / 94%);
+    background: var(--page-canvas);
     box-shadow: 0 4px 16px rgb(0 0 0 / 20%);
   }
   :root[data-theme="dark"] .site-header .nav-inner {

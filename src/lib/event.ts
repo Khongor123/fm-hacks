@@ -31,6 +31,14 @@ export function eventPhase(now: number): "before" | "event" | "submissions" | "c
   return "closed";
 }
 
+export function formatDeadlineRemaining(remaining: number): string {
+  if (remaining <= 0) return "Deadline passed";
+  const seconds = Math.ceil(remaining / 1000);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return `${hours}h ${String(minutes).padStart(2, "0")}m ${String(seconds % 60).padStart(2, "0")}s`;
+}
+
 export function nextBoundaryDelay(now: number, phase: ReturnType<typeof eventPhase>): number | null {
   const next = phase === "before" ? EVENT_DAY_START
     : phase === "event" ? SUBMISSIONS_OPEN
