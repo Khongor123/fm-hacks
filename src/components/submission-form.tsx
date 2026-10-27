@@ -102,6 +102,11 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
 
   async function save(final: boolean) {
     if (!checkedIn || !editable || busy) return;
+    if (!TRACKS.some(track => track === form.track)) {
+      setError("Choose a track before saving or submitting your project.");
+      document.getElementById("project_track")?.focus();
+      return;
+    }
     setBusy(true); setMessage(""); setError(""); setProgress(null);
     const supabase = createClient();
     let newPath: string | null = null;
@@ -122,7 +127,7 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
         uploadComplete = true;
       }
       const { error: saveError } = await supabase.rpc("save_submission", {
-        p_title: form.title, p_description: form.description, p_track: form.track || null,
+        p_title: form.title, p_description: form.description, p_track: form.track,
         p_github_url: form.github_url, p_public_repo_confirmed: form.public_repo_confirmed,
         p_ai_level: form.ai_level || null, p_ai_disclosure: form.ai_disclosure,
         p_slide_path: newPath ?? submission?.slide_path ?? null, p_submit: final,
@@ -170,7 +175,7 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
       : <><p>Any checked-in team member can save, revise, and submit this shared entry until Sunday at 10:00 a.m. ET.</p>
         <div className="submission-fields"><div className="field"><label htmlFor="project_title">Project title</label><input id="project_title" maxLength={120} value={form.title} onChange={event => set("title", event.target.value)} /></div>
           <div className="field"><label htmlFor="project_description">Short description</label><textarea id="project_description" maxLength={500} rows={3} value={form.description} onChange={event => set("description", event.target.value)} /></div>
-          <div className="field"><label htmlFor="project_track">Track</label><select id="project_track" value={form.track} onChange={event => set("track", event.target.value)}><option value="">Choose a track</option>{TRACKS.map(track => <option key={track}>{track}</option>)}</select></div>
+          <div className="field"><label htmlFor="project_track">Track (required)</label><select id="project_track" value={form.track} onChange={event => { set("track", event.target.value); setError(""); }} required><option value="">Choose a track</option>{TRACKS.map(track => <option key={track}>{track}</option>)}</select></div>
           <div className="field"><label htmlFor="project_github">Public GitHub repository URL</label><input id="project_github" type="url" placeholder="https://github.com/owner/repository" value={form.github_url} onChange={event => set("github_url", event.target.value)} /><small>Organizers will check that this link opens publicly.</small></div>
           <label className="check-line"><input type="checkbox" checked={form.public_repo_confirmed} onChange={event => set("public_repo_confirmed", event.target.checked)} /> I confirm the repository is public.</label>
           <div className="field"><label htmlFor="ai_level">AI-use level</label><select id="ai_level" value={form.ai_level} onChange={event => set("ai_level", event.target.value)}><option value="">Choose a level</option><option value="none">None</option><option value="assisted">Assisted</option><option value="substantial">Substantial</option></select></div>
