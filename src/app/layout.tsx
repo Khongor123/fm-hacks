@@ -30,7 +30,7 @@ export default function RootLayout({
         {children}
         <footer className="site-footer">
           <div className="shell footer-inner">
-            <span>F&MHacks 2026 · CS Club</span>
+            <span>Built by Khongor Ochirkhuu &apos;29</span>
             <span>
               Built for curious people at Franklin & Marshall College.
             </span>

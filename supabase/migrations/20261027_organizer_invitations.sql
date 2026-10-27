@@ -4,11 +4,11 @@ create table if not exists public.organizer_invitations (
   id uuid primary key default gen_random_uuid(),
   email text not null check (email = lower(btrim(email)) and email ~ '^[^@[:space:]]+@fandm\.edu$'),
   token_hash bytea not null unique,
-  invited_by uuid not null references public.profiles(id),
+  invited_by uuid references public.profiles(id) on delete set null,
   created_at timestamptz not null default now(),
   expires_at timestamptz not null default (now() + interval '7 days'),
   used_at timestamptz,
-  used_by uuid references public.profiles(id),
+  used_by uuid references public.profiles(id) on delete set null,
   revoked_at timestamptz
 );
 create index if not exists organizer_invitations_email_idx on public.organizer_invitations (email);

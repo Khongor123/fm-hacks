@@ -1,4 +1,4 @@
--- Run on a disposable Supabase project with the invitation migration applied.
+-- Run on a disposable Supabase project with both invitation migrations applied.
 -- Run before the Nov 4 public registration cutoff. The transaction rolls back
 -- all fixture users, profiles, and invitations.
 begin;
@@ -133,6 +133,18 @@ begin
   if (select count(*) from public.profiles where registration_status = 'confirmed') <> 50
      or not exists (select 1 from public.profiles where id = v_wait2 and admin and registration_status = 'organizer') then
     raise exception 'Waitlisted acceptance changed confirmed capacity';
+  end if;
+  delete from auth.users where id = v_invited;
+  if exists (select 1 from public.profiles where id = v_invited)
+     or not exists (select 1 from public.organizer_invitations
+       where token_hash = decode(v_hash1, 'hex') and used_by is null) then
+    raise exception 'Used invitation blocked account deletion';
+  end if;
+  delete from auth.users where id = v_admin;
+  if exists (select 1 from public.profiles where id = v_admin)
+     or not exists (select 1 from public.organizer_invitations
+       where token_hash = decode(v_hash1, 'hex') and invited_by is null) then
+    raise exception 'Created invitation blocked account deletion';
   end if;
   raise notice 'Organizer invitation regression checks passed';
 end;
