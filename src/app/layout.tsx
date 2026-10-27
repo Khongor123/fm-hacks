@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 const initializeTheme = `(() => {
   try {
