@@ -80,12 +80,14 @@ a {
   pointer-events: none;
 }
 .site-header .nav-inner {
+  position: relative;
   width: fit-content;
   max-width: calc(100% - 48px);
   min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 20px;
   padding: 8px 20px 8px 32px;
   border: 1px solid rgb(4 30 66 / 10%);
   border-radius: 999px;
@@ -102,6 +104,9 @@ a {
   gap: 30px;
   font-size: 13px;
   font-weight: 600;
+}
+.menu-toggle {
+  display: none;
 }
 .site-header nav > a:not(.nav-button) {
   color: var(--printers-ink);
@@ -1371,6 +1376,7 @@ a {
     width: min(100% - 24px, 1200px);
     max-width: none;
     min-height: 64px;
+    justify-content: space-between;
     padding: 0;
     border: 0;
     border-radius: 0;
@@ -1380,18 +1386,58 @@ a {
     -webkit-backdrop-filter: none;
   }
   .site-header nav {
-    width: 100%;
-    justify-content: space-between;
-    gap: 8px;
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--page-canvas);
+    box-shadow: var(--shadow);
+  }
+  .site-header nav.is-open {
+    display: flex;
   }
   .site-header nav > a:not(.nav-button) {
-    font-size: 11px;
-    white-space: nowrap;
+    padding: 12px 14px;
+    font-size: 14px;
+    border-radius: 9px;
+  }
+  .site-header nav > a:not(.nav-button):hover {
+    background: var(--soft);
   }
   .nav-button {
-    min-height: 36px;
-    padding: 8px 11px;
-    font-size: 11px;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 4px;
+    font-size: 14px;
+  }
+  .menu-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--heritage-navy);
+  }
+  .menu-toggle-lines {
+    display: grid;
+    gap: 5px;
+  }
+  .menu-toggle-lines span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
   }
   .hero-grid,
   .two-column,
@@ -1715,14 +1761,13 @@ a {
   }
 }
 
-/* The switch stays inside the floating navigation on every page. */
 .theme-toggle {
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
   width: 36px;
   height: 36px;
-  margin-left: -10px;
+  margin-left: 0;
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 50%;
@@ -1887,12 +1932,11 @@ a {
     box-shadow: none;
   }
   .theme-toggle {
-    width: 30px;
-    height: 30px;
-    margin-left: 0;
+    width: 44px;
+    height: 44px;
   }
   .theme-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
 }
