@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: { default: "F&MHacks 2026", template: "%s | F&MHacks 2026" },
   description:
     "A 24-hour student hackathon at Franklin & Marshall College, November 7–8, 2026.",
+  icons: { icon: { url: "/hero-logo-badge.webp", type: "image/webp" } },
 };
 
 export default function RootLayout({

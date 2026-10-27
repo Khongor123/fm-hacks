@@ -178,7 +178,7 @@ export default async function Home({
           </div>
           <div className="track-grid prize-grid">
             <article className="track-card track-prize-card">
-              <span className="track-number">01 / APPLIED AI</span>
+              <span className="track-number">01 / Applied AI</span>
               <div className="track-icon">✳</div>
               <h3>APPLIED AI</h3>
               <p className="track-description">
