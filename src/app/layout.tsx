@@ -2,6 +2,15 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
+const initializeTheme = `(() => {
+  try {
+    const saved = localStorage.getItem("fmh-theme");
+    document.documentElement.dataset.theme = saved === "light" ? "light" : "dark";
+  } catch {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();`;
+
 export const metadata: Metadata = {
   title: { default: "F&MHacks 2026", template: "%s | F&MHacks 2026" },
   description:
@@ -12,7 +21,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: initializeTheme }} />
+      </head>
       <body>
         <SiteHeader />
         {children}

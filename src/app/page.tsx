@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Countdown } from "@/components/countdown";
+import { HeroLogo } from "@/components/hero-logo";
 import {
   ParticipantDashboard,
   type Team,
@@ -88,7 +88,7 @@ export default async function Home({
           <div className="shell hero-grid">
             <div className="hero-content">
               <p className="eyebrow">
-                <span className="eyebrow-dot" /> THE F&M CS CLUB PRESENTS
+                <span className="eyebrow-dot" aria-hidden="true" /> THE F&M CS CLUB PRESENTS
               </p>
               <h1>
                 Build something
@@ -124,16 +124,7 @@ export default async function Home({
               </div>
             </div>
             <div className="hero-aside">
-              <div className="orbit-art" aria-hidden="true">
-                <div className="orbit orbit-one" />
-                <div className="orbit orbit-two" />
-                <div className="orbit orbit-three" />
-                <div className="orbit-center">&</div>
-                <span className="orbit-star star-one">✳</span>
-                <span className="orbit-star star-two">✳</span>
-                <span className="orbit-star star-three">✦</span>
-              </div>
-              <Countdown />
+              <HeroLogo />
             </div>
           </div>
           <div className="hero-bottom shell">
@@ -173,72 +164,58 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section tracks-section">
+      <section className="section tracks-prizes-section" id="prizes">
         <div className="shell">
           <div className="section-heading">
             <div>
-              <p className="section-kicker">02 / CHOOSE A DIRECTION</p>
-              <h2>Three ways to start.</h2>
+              <p className="section-kicker">02 / TRACKS &amp; PRIZES</p>
+              <h2>Pick a track. Build for the prize.</h2>
             </div>
             <p>
-              Track descriptions and judging criteria are being finalized.
-              You’ll choose one track for your project submission.
+              Choose one track for your project. Descriptions and judging criteria
+              are being finalized; each track has its own prize.
             </p>
           </div>
-          <div className="track-grid">
-            <article className="track-card">
-              <span className="track-number">01</span>
+          <div className="track-grid prize-grid">
+            <article className="track-card track-prize-card">
+              <span className="track-number">01 / AI</span>
               <div className="track-icon">✳</div>
               <h3>AI</h3>
-              <p>
+              <p className="track-description">
                 Explore what today’s AI can help people create or understand.
               </p>
+              <PrizeModel />
+              <div className="track-prize-reward">
+                <span className="track-prize-label">TRACK PRIZE</span>
+                <h4>Google Fitbit Air</h4>
+                <p>Obsidian</p>
+              </div>
             </article>
-            <article className="track-card">
-              <span className="track-number">02</span>
+            <article className="track-card track-prize-card">
+              <span className="track-number">02 / SOCIAL GOOD</span>
               <div className="track-icon">◎</div>
               <h3>Social good</h3>
-              <p>Make something useful for a community, on campus or beyond.</p>
+              <p className="track-description">Make something useful for a community, on campus or beyond.</p>
+              <ProductSpin atlasPrefix="/echo-dot-spin" poster="/echo-dot-spin-poster.png" label="Amazon Echo Dot" frameCount={120} frameSize={312} durationMs={2000} />
+              <div className="track-prize-reward">
+                <span className="track-prize-label">TRACK PRIZE</span>
+                <h4>Amazon Echo Dot</h4>
+                <p>5th generation · Charcoal</p>
+              </div>
             </article>
-            <article className="track-card">
-              <span className="track-number">03</span>
+            <article className="track-card track-prize-card">
+              <span className="track-number">03 / CREATIVE BUILD</span>
               <div className="track-icon">✦</div>
               <h3>Creative build</h3>
-              <p>
+              <p className="track-description">
                 Surprise us with a game, experience, or new form of expression.
               </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="section prizes-section" id="prizes">
-        <div className="shell">
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker">03 / PRIZES</p>
-              <h2>Build something. Win something.</h2>
-            </div>
-            <p>One prize for each track. Make your idea count.</p>
-          </div>
-          <div className="track-grid prize-grid">
-            <article className="track-card prize-card">
-              <span className="track-number">01 / AI</span>
-              <PrizeModel />
-              <h3>Google Fitbit Air</h3>
-              <p>Obsidian</p>
-            </article>
-            <article className="track-card prize-card">
-              <span className="track-number">02 / SOCIAL GOOD</span>
-              <ProductSpin src="/echo-dot-360.mp4" poster="/echo-dot-poster.png" label="Amazon Echo Dot" className="echo-360" />
-              <h3>Amazon Echo Dot</h3>
-              <p>5th generation · Charcoal</p>
-            </article>
-            <article className="track-card prize-card">
-              <span className="track-number">03 / CREATIVITY</span>
-              <ProductSpin src="/instax-mini-12-360.mp4" poster="/instax-mini-12-poster.png" label="Fujifilm instax mini 12" className="instax-360" />
-              <h3>Fujifilm instax mini 12</h3>
-              <p>Instant Camera · Lilac Purple</p>
+              <ProductSpin atlasPrefix="/instax-mini-12-spin" poster="/instax-mini-12-spin-poster.png" label="Fujifilm instax mini 12" frameCount={128} frameSize={320} durationMs={2134} />
+              <div className="track-prize-reward">
+                <span className="track-prize-label">TRACK PRIZE</span>
+                <h4>Fujifilm instax mini 12</h4>
+                <p>Instant Camera · Lilac Purple</p>
+              </div>
             </article>
           </div>
         </div>
@@ -247,7 +224,7 @@ export default async function Home({
       <section className="section schedule-section" id="schedule">
         <div className="shell two-column">
           <div>
-            <p className="section-kicker">04 / THE PLAN</p>
+            <p className="section-kicker">03 / THE PLAN</p>
             <h2>
               24 hours.
               <br />A lot can happen.
@@ -292,7 +269,7 @@ export default async function Home({
         <div className="shell">
           <div className="section-heading">
             <div>
-              <p className="section-kicker">05 / THE GROUND RULES</p>
+              <p className="section-kicker">04 / THE GROUND RULES</p>
               <h2>Make it yours.</h2>
             </div>
             <p>We want to see what your team can build during the event.</p>
