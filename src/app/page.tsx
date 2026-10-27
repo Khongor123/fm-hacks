@@ -178,11 +178,11 @@ export default async function Home({
           </div>
           <div className="track-grid prize-grid">
             <article className="track-card track-prize-card">
-              <span className="track-number">01 / AI</span>
+              <span className="track-number">01 / APPLIED AI</span>
               <div className="track-icon">✳</div>
-              <h3>AI</h3>
+              <h3>APPLIED AI</h3>
               <p className="track-description">
-                Explore what today’s AI can help people create or understand.
+                Build an AI-powered tool that solves a real problem.
               </p>
               <PrizeModel />
               <div className="track-prize-reward">
