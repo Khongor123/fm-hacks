@@ -1098,8 +1098,15 @@ a {
 }
 .account-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 27px;
   margin-top: 27px;
+}
+.organizer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
 }
 .text-link {
   padding: 0;

@@ -9,12 +9,14 @@ export const metadata: Metadata = { title: "Register" };
 export default async function Register({ searchParams }: { searchParams: Promise<{ error?: string; confirmation_required?: string }> }) {
   const params = await searchParams;
   const open = registrationOpen();
+  const freeShirtOfferOpen = Date.now() < Date.parse("2026-10-30T00:00:00-04:00");
 
   return <main className="auth-page"><div className="shell auth-layout">
     <div className="auth-side">
       <p className="section-kicker">JOIN THE HACKATHON</p>
       <h1>Make room for<br/><em>your next idea.</em></h1>
       <p>F&MHacks is free and open to students from every major. Register with your F&M email to save your place or join the waitlist.</p>
+      {open && freeShirtOfferOpen && <p>Sign up by Thursday, October 29 at 11:59 p.m. Eastern to receive a free T-shirt.</p>}
       <div className="auth-side-details"><span>November 7–8, 2026</span><span>Stager Auditorium</span><span>{CAPACITY} student places</span></div>
     </div>
     <div className="form-card">

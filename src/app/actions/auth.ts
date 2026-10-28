@@ -72,6 +72,20 @@ export async function logout() {
   redirect("/");
 }
 
+export async function deleteAccount(data: FormData) {
+  if (data.get("confirm_delete") !== "yes") errorRedirect("/account/delete", "Confirm that you want to delete your account.");
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+  const { error } = await supabase.rpc("delete_my_account");
+  if (error) {
+    console.error("Account deletion failed:", error);
+    errorRedirect("/account/delete", "Could not delete your account. Please try again.");
+  }
+  await supabase.auth.signOut();
+  redirect("/");
+}
+
 export async function requestPasswordReset(data: FormData) {
   const email = value(data, "email").toLowerCase();
   if (!/^[^@\s]+@fandm\.edu$/.test(email)) errorRedirect("/forgot-password", "Use your F&M email address.");
