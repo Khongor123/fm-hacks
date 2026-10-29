@@ -13,7 +13,7 @@ On a disposable Supabase project, run [`supabase/tests/organizer_invitations.sql
 
 The public Supabase key is safe in the browser because the `profiles` table has row-level security. Never add the Supabase secret or service role key to a `NEXT_PUBLIC_` variable.
 
-Production already records migration version `20261011` as `dashboard_teams`. Keep that history row. After committing and pushing the corrected migration layout, recreate or reset a failed disposable Supabase preview branch so it starts with a clean migration history; resetting a preview removes its preview data. Do not reset the production database.
+Production already records migration version `20261011` as `dashboard_teams`. Keep that history row. After pushing the corrected migration layout, check **View Logs** for the `main` branch in Supabase and confirm the migration step succeeded. Only recreate or reset a failed preview branch if a separate preview branch actually exists; never reset the production database.
 
 ## Organizer accounts
 
