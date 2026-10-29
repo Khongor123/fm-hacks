@@ -4,7 +4,7 @@ Use the `event-preview` Git branch and a **separate Supabase project**. A branch
 
 ## 1. Set up the isolated project
 
-1. Create a new Supabase project. In its SQL Editor, run `supabase/schema.sql`, then `supabase/migrations/20261011_event_submissions.sql`. The latter creates the private `submission-slides` bucket and the private event clock. For a fresh project, the other historical migrations are already represented in `schema.sql`.
+1. Create a new Supabase project. In its SQL Editor, run `supabase/migrations/20261012000000_baseline.sql`, then `20261028000000_self_delete_account.sql` and `20261029000000_participant_directory.sql`. The baseline creates the private `submission-slides` bucket and event clock. The `20261011_dashboard_teams.sql` compatibility marker contains no schema changes.
 2. In Supabase Authentication settings, enable email/password signup and turn **Confirm Email** off for this test project. Set the minimum password length to 8 as described in the main README.
 3. Put the **test project's** URL and publishable key in the ignored `.env.local`, along with `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. Keep the service-role key out of the app and out of `NEXT_PUBLIC_` variables.
 4. Run `npm install` and `npm run dev`, then register two or more test participants with distinct `@fandm.edu` addresses. Register a separate organizer account and set its `profiles.admin = true` and `registration_status = 'organizer'` in the test project's Table Editor. Create a team with two participants; leave one participant solo. Set up these accounts and teams before the real November 3 registration/team cutoff.
