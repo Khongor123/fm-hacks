@@ -60,6 +60,7 @@ export function ParticipantDashboard({ profile, team, teamLoadError, now, notice
         : team ? <><p>{team.members.length} of 4 places filled</p><p>Share your code and build with your crew.</p></>
         : <p>Create a team or join one with a code from a teammate.</p>}
         {canJoinTeams && <Link href="/team" className="text-link">{team ? "View and manage team" : "Create or join a team"} ↗</Link>}
+        {!profile.admin && <Link href="/participants" className="text-link participant-directory-link">View participants ↗</Link>}
       </section>
       <div className="participant-panel participant-logo-panel"><HeroLogo serverNow={now} /></div>
     </div>

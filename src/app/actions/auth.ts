@@ -61,8 +61,18 @@ export async function login(data: FormData) {
   const email = value(data, "email").toLowerCase();
   const password = String(data.get("password") ?? "");
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) errorRedirect("/login", "Email or password is incorrect.");
+  let error;
+  try {
+    ({ error } = await supabase.auth.signInWithPassword({ email, password }));
+  } catch (cause) {
+    console.error("Sign-in connection failed:", cause);
+    errorRedirect("/login", "Could not reach the sign-in service. Try again shortly.");
+  }
+  if (error) {
+    if (error.code === "invalid_credentials") errorRedirect("/login", "Email or password is incorrect. Check that this account was created for this site.");
+    console.error("Sign-in failed:", { code: error.code, status: error.status, message: error.message });
+    errorRedirect("/login", "Sign-in is unavailable right now. Please try again shortly.");
+  }
   redirect("/#dashboard");
 }
 

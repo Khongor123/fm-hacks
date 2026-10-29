@@ -1157,6 +1157,9 @@ a {
   border-collapse: collapse;
   text-align: left;
 }
+.participant-directory {
+  min-width: 520px;
+}
 .roster-table th {
   background: var(--limestone);
   color: var(--heritage-navy);
@@ -1264,6 +1267,9 @@ a {
 .participant-team .text-link {
   display: inline-block;
   margin-top: 12px;
+}
+.participant-team .participant-directory-link {
+  display: block;
 }
 .team-panel-heading {
   display: flex;
