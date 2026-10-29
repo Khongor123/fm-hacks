@@ -24,6 +24,6 @@ export function RegistrationForm() {
     <div className="field"><label htmlFor="password">Password</label><input id="password" name="password" type="password" autoComplete="new-password" minLength={8} placeholder="At least 8 characters" required /><small>Use a unique password with at least 8 characters.</small></div>
     <label className="checkbox-line"><input type="checkbox" name="attendance_commitment" required /><span>I expect to attend F&MHacks in person on November 7–8. I understand I may be waitlisted if all {CAPACITY} places are filled.</span></label>
     <button type="submit" className="button button-dark full-width" disabled={pending}>{pending ? "Creating account…" : "Create account"} <span aria-hidden="true">→</span></button>
-    <p className="form-footnote">Registration closes Nov 3 at 11:59 p.m. ET. We’ll never display your personal information publicly.</p>
+    <p className="form-footnote">Registration closes Nov 3 at 11:59 p.m. ET. Signed-in students can see participants’ names, email addresses, and team status.</p>
   </form>;
 }

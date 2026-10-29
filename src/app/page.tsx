@@ -9,7 +9,7 @@ import { EventDashboard } from "@/components/event-dashboard";
 import { EventBoundary } from "@/components/event-boundary";
 import { EVENT_DAY_START, type Submission } from "@/lib/event";
 import { getEventNow } from "@/lib/event-clock";
-import { CAPACITY } from "@/lib/config";
+import { CAPACITY, freeShirtOfferOpen, registrationOpen } from "@/lib/config";
 import { PrizeModel } from "@/components/prize-model";
 import { ProductSpin } from "@/components/product-spin";
 
@@ -24,6 +24,8 @@ export default async function Home({
     data: { user },
   } = await supabase.auth.getUser();
   const now = user ? await getEventNow(supabase) : Date.now();
+  const shirtOfferOpen = freeShirtOfferOpen();
+  const canRegister = registrationOpen();
   const { data: profile } = user
     ? await supabase
         .from("profiles")
@@ -98,11 +100,11 @@ export default async function Home({
               <p className="hero-description">
                 One campus. One day and night. A room full of ideas waiting to
                 become real. Join students across every major for F&MHacks 2026.
-                No experience needed. Plus, get a free t-shirt.
+                No experience needed.{shirtOfferOpen ? " Sign up by October 29 for a free T-shirt." : ""}
               </p>
               <div className="hero-actions">
-                <Link href="/register" className="button button-primary">
-                  Register now <span aria-hidden="true">↗</span>
+                <Link href={canRegister ? "/register" : "/login"} className="button button-primary">
+                  {canRegister ? "Register now" : "Log in"} <span aria-hidden="true">↗</span>
                 </Link>
                 <a href="#about" className="button button-ghost">
                   Explore the event <span aria-hidden="true">↓</span>
@@ -128,7 +130,7 @@ export default async function Home({
             </div>
           </div>
           <div className="hero-bottom shell">
-            <span>Registration closes Nov 3 at 11:59 p.m. ET</span>
+            <span>{canRegister ? "Registration closes Nov 3 at 11:59 p.m. ET" : "Registration is closed"}</span>
             <span>OPEN TO ALL F&M MAJORS</span>
           </div>
         </section>
@@ -157,7 +159,7 @@ export default async function Home({
             </p>
             <div className="pill-row">
               <span>Free to join</span>
-              <span>Free T-shirt</span>
+              {shirtOfferOpen && <span>Free T-shirt</span>}
               <span>Food & snacks</span>
             </div>
           </div>
@@ -316,14 +318,14 @@ export default async function Home({
             <p>
               {user
                 ? "Your F&MHacks details and team are at the top of this page."
-                : `Seats are limited to ${CAPACITY} students. Register with your F&M email by November 3.`}
+                : canRegister ? `Seats are limited to ${CAPACITY} students. Register with your F&M email by November 3.` : "Registration has closed. Log in to view your account."}
             </p>
           </div>
           <Link
-            href={user ? "/#dashboard" : "/register"}
+            href={user ? "/#dashboard" : canRegister ? "/register" : "/login"}
             className="button button-light"
           >
-            {user ? "Back to dashboard" : "Save your spot"}{" "}
+            {user ? "Back to dashboard" : canRegister ? "Save your spot" : "Log in"}{" "}
             <span aria-hidden="true">↗</span>
           </Link>
         </div>

@@ -100,9 +100,20 @@ export async function requestPasswordReset(data: FormData) {
   const email = value(data, "email").toLowerCase();
   if (!/^[^@\s]+@fandm\.edu$/.test(email)) errorRedirect("/forgot-password", "Use your F&M email address.");
   const supabase = await createClient();
-  await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${siteUrl()}/auth/callback?next=/reset-password`,
-  });
+  let sendFailed = false;
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${siteUrl()}/auth/callback?next=/reset-password`,
+    });
+    if (error) {
+      console.error("Password reset request failed:", { code: error.code, status: error.status, message: error.message });
+      sendFailed = true;
+    }
+  } catch (cause) {
+    console.error("Password reset connection failed:", cause);
+    sendFailed = true;
+  }
+  if (sendFailed) errorRedirect("/forgot-password", "Could not send a reset link. Please try again shortly.");
   redirect("/forgot-password?sent=1");
 }
 

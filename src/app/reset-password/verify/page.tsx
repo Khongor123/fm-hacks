@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { confirmPasswordReset } from "@/app/actions/auth";
 
-export const metadata: Metadata = { title: "Confirm password reset" };
+export const metadata: Metadata = { title: "Confirm password reset", robots: { index: false, follow: false }, referrer: "no-referrer" };
 
 export default async function VerifyPasswordReset({ searchParams }: { searchParams: Promise<{ token_hash?: string }> }) {
   const { token_hash: tokenHash } = await searchParams;

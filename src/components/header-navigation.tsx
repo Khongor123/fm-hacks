@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-export function HeaderNavigation({ signedIn }: { signedIn: boolean }) {
+export function HeaderNavigation({ signedIn, registrationOpen }: { signedIn: boolean; registrationOpen: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
 
@@ -26,7 +26,7 @@ export function HeaderNavigation({ signedIn }: { signedIn: boolean }) {
         <Link href="/#rules" onClick={() => setMenuOpen(false)}>Rules</Link>
         {signedIn
           ? <Link href="/#dashboard" className="nav-button" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-          : <Link href="/register" className="nav-button" onClick={() => setMenuOpen(false)}>Register <span aria-hidden="true">↗</span></Link>}
+          : <Link href={registrationOpen ? "/register" : "/login"} className="nav-button" onClick={() => setMenuOpen(false)}>{registrationOpen ? "Register" : "Log in"} <span aria-hidden="true">↗</span></Link>}
       </nav>
       <ThemeToggle />
     </div>
