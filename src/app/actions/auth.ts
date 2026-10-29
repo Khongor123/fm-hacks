@@ -106,6 +106,15 @@ export async function requestPasswordReset(data: FormData) {
   redirect("/forgot-password?sent=1");
 }
 
+export async function confirmPasswordReset(data: FormData) {
+  const tokenHash = value(data, "token_hash");
+  if (!tokenHash) errorRedirect("/forgot-password", "Reset link is invalid. Request a new one.");
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
+  if (error) errorRedirect("/forgot-password", "Reset link expired or was already used. Request a new one.");
+  redirect("/reset-password");
+}
+
 export async function updatePassword(data: FormData) {
   const password = String(data.get("password") ?? "");
   if (password.length < 8) errorRedirect("/reset-password", "Use a password with at least 8 characters.");
