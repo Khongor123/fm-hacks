@@ -19,8 +19,13 @@ const knownErrors = new Set([
 ]);
 
 function teamError(message: string, code?: string): never {
+  if (!knownErrors.has(message) && code !== "23505") {
+    console.error("Team action failed", { code, message });
+  }
   const copy = code === "23505"
     ? "You are already on a team. Refresh this page to see it."
+    : message === "Enter a valid 12-character team code."
+      ? "Team codes are being updated. Please try again shortly."
     : knownErrors.has(message) ? message : "Team action failed. Please try again.";
   redirect(`/team?team_error=${encodeURIComponent(copy)}`);
 }

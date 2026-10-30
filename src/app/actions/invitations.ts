@@ -43,7 +43,8 @@ export async function acceptInvitation(_previous: AcceptState, data: FormData): 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Sign in to accept this invitation." };
   const { data: promotedEmail, error } = await supabase.rpc("accept_organizer_invitation", { p_hash: hash(token) });
-  if (error) return { error: "This invitation is invalid, expired, already used, or intended for another F&M account." };
+  if (error) return { error: error.message === "A team submission exists. Ask an organizer for help before accepting this invitation."
+    ? error.message : "This invitation is invalid, expired, already used, or intended for another F&M account." };
   revalidatePath("/admin");
   revalidatePath("/account");
   redirect(`/admin?invite_accepted=1${promotedEmail ? `&promoted=${encodeURIComponent(promotedEmail)}` : ""}`);
@@ -59,7 +60,8 @@ export async function signInAndAccept(_previous: AcceptState, data: FormData): P
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: "Email or password is incorrect." };
   const { data: promotedEmail, error: acceptError } = await supabase.rpc("accept_organizer_invitation", { p_hash: hash(token) });
-  if (acceptError) return { error: "This invitation is invalid, expired, already used, or intended for another F&M account." };
+  if (acceptError) return { error: acceptError.message === "A team submission exists. Ask an organizer for help before accepting this invitation."
+    ? acceptError.message : "This invitation is invalid, expired, already used, or intended for another F&M account." };
   revalidatePath("/admin");
   redirect(`/admin?invite_accepted=1${promotedEmail ? `&promoted=${encodeURIComponent(promotedEmail)}` : ""}`);
 }

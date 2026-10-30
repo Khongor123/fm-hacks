@@ -111,6 +111,7 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
     const supabase = createClient();
     let newPath: string | null = null;
     let uploadComplete = false;
+    let saved = false;
     let pendingKey: string | null = null;
     try {
       if (file) {
@@ -136,6 +137,7 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
         p_expected_updated_at: submission?.updated_at ?? null,
       });
       if (saveError) throw saveError;
+      saved = true;
       if (pendingKey) window.sessionStorage.removeItem(pendingKey);
       const oldPath = submission?.slide_path;
       const { data, error: readError } = await supabase.rpc("get_my_submission");
@@ -148,21 +150,34 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
       }
       router.refresh();
     } catch (caught) {
-      if (newPath && uploadComplete) {
-        await supabase.storage.from(SLIDE_BUCKET).remove([newPath]);
-        if (pendingKey) window.sessionStorage.removeItem(pendingKey);
+      if (saved) {
+        setMessage("Saved. Refresh this page to see the latest version.");
+      } else {
+        if (newPath && uploadComplete) {
+          try {
+            await supabase.storage.from(SLIDE_BUCKET).remove([newPath]);
+          } catch (cleanupError) {
+            console.error("Could not remove unsaved slide upload", cleanupError);
+          }
+          if (pendingKey) window.sessionStorage.removeItem(pendingKey);
+        }
+        setError(caught instanceof Error ? caught.message : "Could not save the submission.");
       }
-      setError(caught instanceof Error ? caught.message : "Could not save the submission.");
     } finally { setBusy(false); setProgress(null); }
   }
 
   async function updateRepo() {
     setBusy(true); setError(""); setMessage("");
-    const supabase = createClient();
-    const { error } = await supabase.rpc("update_submission_repo", { p_github_url: form.github_url });
-    if (error) setError(error.message);
-    else { setMessage("Repository link updated."); router.refresh(); }
-    setBusy(false);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.rpc("update_submission_repo", { p_github_url: form.github_url });
+      if (error) setError(error.message);
+      else { setMessage("Repository link updated."); router.refresh(); }
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not update the repository link.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return <section className="participant-panel submission-panel" id="submission">

@@ -11,6 +11,8 @@ declare
   v_invited uuid := gen_random_uuid();
   v_bad uuid := gen_random_uuid();
   v_id uuid;
+  v_teammate uuid;
+  v_team uuid;
   v_promoted text;
   v_hash1 text := repeat('a', 64);
   v_hash2 text := repeat('b', 64);
@@ -79,8 +81,14 @@ begin
   for n in 1..49 loop
     insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
       values (gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-        'seat-' || n || '-invite@fandm.edu', jsonb_build_object('full_name', 'Seat Person', 'grade', 'junior', 'tshirt_size', 'M', 'attendance_commitment', true));
+        'seat-' || n || '-invite@fandm.edu', jsonb_build_object('full_name', 'Seat Person', 'grade', 'junior', 'tshirt_size', 'M', 'attendance_commitment', true))
+      returning id into v_id;
+    if n = 1 then v_teammate := v_id; end if;
   end loop;
+  insert into public.teams (name, code, created_by)
+    values ('Invited Creator Team', 'A11CE0', v_confirmed) returning id into v_team;
+  insert into public.team_members (team_id, user_id)
+    values (v_team, v_confirmed), (v_team, v_teammate);
   insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
     values (v_wait1, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
       'wait-one-invite@fandm.edu', jsonb_build_object('full_name', 'First Waitlisted', 'grade', 'junior', 'tshirt_size', 'M', 'attendance_commitment', true));
@@ -117,8 +125,10 @@ begin
   if v_promoted <> 'wait-one-invite@fandm.edu'
      or (select count(*) from public.profiles where registration_status = 'confirmed') <> 50
      or not exists (select 1 from public.profiles where id = v_wait1 and registration_status = 'confirmed')
-     or not exists (select 1 from public.profiles where id = v_wait2 and registration_status = 'waitlisted') then
-    raise exception 'Confirmed promotion did not restore the earliest waitlisted seat';
+     or not exists (select 1 from public.profiles where id = v_wait2 and registration_status = 'waitlisted')
+     or exists (select 1 from public.team_members where user_id = v_confirmed)
+     or (select created_by from public.teams where id = v_team) is distinct from v_teammate then
+    raise exception 'Organizer conversion did not restore the seat and transfer team membership';
   end if;
   begin
     perform public.accept_organizer_invitation(v_hash5);
