@@ -45,10 +45,16 @@ begin
      or exists (select 1 from auth.users where id = v_invited and raw_user_meta_data ? 'organizer_invite_hash') then
     raise exception 'New invitee was not created directly as a private organizer';
   end if;
+  delete from auth.users where id = v_invited;
+  if exists (select 1 from public.profiles where id = v_invited)
+     or not exists (select 1 from public.organizer_invitations
+       where token_hash = decode(v_hash1, 'hex') and used_at is not null and used_by is null) then
+    raise exception 'Used invitation blocked account deletion';
+  end if;
   begin
     insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
       values (gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-        'reused@fandm.edu', jsonb_build_object('full_name', 'Reused Invite', 'organizer_invite_hash', v_hash1));
+        'invited@fandm.edu', jsonb_build_object('full_name', 'Reused Invite', 'organizer_invite_hash', v_hash1));
     raise exception 'Reused invitation succeeded';
   exception when others then
     if sqlerrm = 'Reused invitation succeeded' then raise; end if;
@@ -143,12 +149,6 @@ begin
   if (select count(*) from public.profiles where registration_status = 'confirmed') <> 60
      or not exists (select 1 from public.profiles where id = v_wait2 and admin and registration_status = 'organizer') then
     raise exception 'Waitlisted acceptance changed confirmed capacity';
-  end if;
-  delete from auth.users where id = v_invited;
-  if exists (select 1 from public.profiles where id = v_invited)
-     or not exists (select 1 from public.organizer_invitations
-       where token_hash = decode(v_hash1, 'hex') and used_by is null) then
-    raise exception 'Used invitation blocked account deletion';
   end if;
   delete from auth.users where id = v_admin;
   if exists (select 1 from public.profiles where id = v_admin)

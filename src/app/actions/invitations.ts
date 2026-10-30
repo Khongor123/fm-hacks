@@ -76,10 +76,28 @@ export async function registerInvited(_previous: AcceptState, data: FormData): P
   if (!emailPattern.test(email)) return { error: "Use your F&M email address." };
   if (password.length < 8) return { error: "Use a password with at least 8 characters." };
   const supabase = await createClient();
-  const { data: signup, error } = await supabase.auth.signUp({
-    email, password, options: { data: { full_name: fullName, organizer_invite_hash: hash(token) } },
-  });
-  if (error || !signup.user || signup.user.identities?.length === 0) return { error: "Could not create the organizer account. The invitation may be invalid, expired, used, or for another email. If you already have an account, sign in above." };
-  if (!signup.session) redirect("/register?confirmation_required=1");
+  let signup;
+  try {
+    const result = await supabase.auth.signUp({
+      email, password, options: { data: { full_name: fullName, organizer_invite_hash: hash(token) } },
+    });
+    if (result.error) {
+      console.error("Organizer signup failed:", {
+        code: result.error.code, status: result.error.status, message: result.error.message,
+      });
+      if (result.error.code === "user_already_exists" || /already registered/i.test(result.error.message)) {
+        return { error: "This email already has an account. Sign in above to accept the invitation." };
+      }
+      if (result.error.code === "weak_password") return { error: "Choose a stronger password and try again." };
+      return { error: "Organizer signup failed. Ask an organizer to check the Supabase Auth logs for this attempt." };
+    }
+    signup = result.data;
+  } catch (cause) {
+    console.error("Organizer signup connection failed:", cause);
+    return { error: "Could not reach the signup service. Please try again shortly." };
+  }
+  if (!signup.user) return { error: "Organizer signup did not finish. Please try again." };
+  if (signup.user.identities?.length === 0) return { error: "This email already has an account. Sign in above to accept the invitation." };
+  if (!signup.session) return { error: "Your organizer account was created, but email confirmation is required. Confirm your email, then log in normally." };
   redirect("/admin?invite_accepted=1");
 }
