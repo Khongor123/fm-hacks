@@ -15,7 +15,7 @@ begin
     raise exception 'Self-deletion permissions are incorrect';
   end if;
 
-  for n in 1..50 loop
+  for n in 1..60 loop
     insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
       values (gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
         'delete-seat-' || n || '@fandm.edu', jsonb_build_object('full_name', 'Seat Person', 'grade', 'junior', 'tshirt_size', 'M', 'attendance_commitment', true))
@@ -42,7 +42,7 @@ begin
   perform public.delete_my_account();
   if exists (select 1 from auth.users where id = v_confirmed)
      or exists (select 1 from public.profiles where id = v_confirmed)
-     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 50
+     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 60
      or not exists (select 1 from public.profiles where id = v_wait1 and registration_status = 'confirmed')
      or (select created_by from public.teams where id = v_team) <> v_teammate then
     raise exception 'Confirmed deletion did not remove account, promote first waitlisted, and transfer team';
@@ -51,14 +51,14 @@ begin
   perform set_config('request.jwt.claim.sub', v_wait2::text, true);
   perform public.delete_my_account();
   if exists (select 1 from auth.users where id = v_wait2)
-     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 50 then
+     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 60 then
     raise exception 'Waitlisted deletion changed capacity';
   end if;
 
   perform set_config('request.jwt.claim.sub', v_organizer::text, true);
   perform public.delete_my_account();
   if exists (select 1 from auth.users where id = v_organizer)
-     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 50 then
+     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 60 then
     raise exception 'Organizer deletion changed capacity';
   end if;
 end;

@@ -78,7 +78,7 @@ begin
   insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
     values (v_confirmed, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
       'confirmed-invite@fandm.edu', jsonb_build_object('full_name', 'Confirmed Person', 'grade', 'junior', 'tshirt_size', 'M', 'attendance_commitment', true));
-  for n in 1..49 loop
+  for n in 1..59 loop
     insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
       values (gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
         'seat-' || n || '-invite@fandm.edu', jsonb_build_object('full_name', 'Seat Person', 'grade', 'junior', 'tshirt_size', 'M', 'attendance_commitment', true))
@@ -95,7 +95,7 @@ begin
   insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
     values (v_wait2, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
       'wait-two-invite@fandm.edu', jsonb_build_object('full_name', 'Second Waitlisted', 'grade', 'junior', 'tshirt_size', 'M', 'attendance_commitment', true));
-  if (select count(*) from public.profiles where registration_status = 'confirmed') <> 50 then
+  if (select count(*) from public.profiles where registration_status = 'confirmed') <> 60 then
     raise exception 'Seat cap failed before promotion';
   end if;
   perform set_config('request.jwt.claim.sub', v_confirmed::text, true);
@@ -123,7 +123,7 @@ begin
   perform set_config('request.jwt.claim.sub', v_confirmed::text, true);
   v_promoted := public.accept_organizer_invitation(v_hash5);
   if v_promoted <> 'wait-one-invite@fandm.edu'
-     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 50
+     or (select count(*) from public.profiles where registration_status = 'confirmed') <> 60
      or not exists (select 1 from public.profiles where id = v_wait1 and registration_status = 'confirmed')
      or not exists (select 1 from public.profiles where id = v_wait2 and registration_status = 'waitlisted')
      or exists (select 1 from public.team_members where user_id = v_confirmed)
@@ -140,7 +140,7 @@ begin
   perform public.create_organizer_invitation('wait-two-invite@fandm.edu', v_hash6);
   perform set_config('request.jwt.claim.sub', v_wait2::text, true);
   perform public.accept_organizer_invitation(v_hash6);
-  if (select count(*) from public.profiles where registration_status = 'confirmed') <> 50
+  if (select count(*) from public.profiles where registration_status = 'confirmed') <> 60
      or not exists (select 1 from public.profiles where id = v_wait2 and admin and registration_status = 'organizer') then
     raise exception 'Waitlisted acceptance changed confirmed capacity';
   end if;
