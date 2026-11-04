@@ -1,4 +1,4 @@
--- Run on a disposable project after the self-delete migration and before Nov 4.
+-- Run on a disposable project after the self-delete migration and before Nov 6.
 -- The transaction rolls back all fixture accounts.
 begin;
 do $$

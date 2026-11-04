@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { eventPhase, formatDeadlineRemaining, nextBoundaryDelay } from "../src/lib/event.ts";
+import { registrationOpen, teamChangesOpen } from "../src/lib/config.ts";
+
+test("registration and team changes close after November 5 Eastern", () => {
+  const cutoff = Date.parse("2026-11-06T00:00:00-05:00");
+  assert.equal(registrationOpen(Date.parse("2026-11-04T00:00:00-05:00")), true);
+  assert.equal(registrationOpen(cutoff - 1), true);
+  assert.equal(registrationOpen(cutoff), false);
+  assert.equal(teamChangesOpen(cutoff - 1), true);
+  assert.equal(teamChangesOpen(cutoff), false);
+});
 
 test("event-day and submission boundaries use fixed Eastern instants", () => {
   const kickoff = Date.parse("2026-11-07T09:00:00-05:00");

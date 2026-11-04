@@ -4,10 +4,10 @@ Use the `event-preview` Git branch and a **separate Supabase project**. A branch
 
 ## 1. Set up the isolated project
 
-1. Create a new Supabase project. In its SQL Editor, run `supabase/migrations/20261012000000_baseline.sql`, then `20261028000000_self_delete_account.sql` and `20261029000000_participant_directory.sql`. The baseline creates the private `submission-slides` bucket and event clock. The `20261011_dashboard_teams.sql` compatibility marker contains no schema changes.
+1. Create a new Supabase project. In its SQL Editor, run the files in `supabase/migrations` in order, starting with `20261012000000_baseline.sql`. The baseline creates the private `submission-slides` bucket and event clock. The `20261011_dashboard_teams.sql` compatibility marker contains no schema changes.
 2. In Supabase Authentication settings, enable email/password signup and turn **Confirm Email** off for this test project. Set the minimum password length to 8 as described in the main README.
 3. Put the **test project's** URL and publishable key in the ignored `.env.local`, along with `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. Keep the service-role key out of the app and out of `NEXT_PUBLIC_` variables.
-4. Run `npm install` and `npm run dev`, then register two or more test participants with distinct `@fandm.edu` addresses. Register a separate organizer account and set its `profiles.admin = true` and `registration_status = 'organizer'` in the test project's Table Editor. Create a team with two participants; leave one participant solo. Set up these accounts and teams before the real November 3 registration/team cutoff.
+4. Run `npm install` and `npm run dev`, then register two or more test participants with distinct `@fandm.edu` addresses. Register a separate organizer account and set its `profiles.admin = true` and `registration_status = 'organizer'` in the test project's Table Editor. Create a team with two participants; leave one participant solo. Set up these accounts and teams before the real November 5 registration/team cutoff.
 5. Run `supabase/tests/preview_smoke.sql` in SQL Editor. It checks that the required tables, private bucket, RPC grants, and Storage policies are present.
 6. Sign in as the organizer and mark the test participants arrived on `/admin`. Verify the roster shows who checked them in and when. Sign back in as a participant for the remaining steps.
 
@@ -83,4 +83,4 @@ The offset table has no client grants. Only someone with SQL Editor privileges c
 - Remove a participant's check-in from `/admin`; they should see organizer guidance and be unable to save. A waitlisted participant should never receive a submission form. Sign in as a non-organizer and confirm `/admin/submissions` is inaccessible; organizers should see only submitted entries grouped by track and be able to download their slides. A saved draft must stay absent from the organizer list, direct submission reads, and organizer slide downloads; its participant owner must still be able to reopen it.
 - At 10:00 Sunday, confirm the form becomes view only, uploads and saves fail at the database, and the GitHub repository URL can still be corrected. Check that organizers can review the corrected link.
 
-The real registration and team cutoff still uses its original timestamp. Create test accounts and teams before shifting the event clock; the offset controls the event dashboard and submission rules, not registration or team membership.
+The real registration and team cutoff is November 5 at 11:59 p.m. Eastern. Create test accounts and teams before shifting the event clock; the offset controls the event dashboard and submission rules, not registration or team membership.

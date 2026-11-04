@@ -75,7 +75,7 @@ begin
   if v_email !~ '^[^@[:space:]]+@fandm\.edu$' then
     raise exception 'An F&M email address is required';
   end if;
-  if clock_timestamp() >= timestamptz '2026-11-04 00:00:00-05' then
+  if clock_timestamp() >= timestamptz '2026-11-06 00:00:00-05' then
     raise exception 'Registration is closed';
   end if;
   if coalesce(new.raw_user_meta_data ->> 'attendance_commitment', '') <> 'true' then
@@ -180,7 +180,7 @@ declare
   v_code text;
   v_name text := btrim(coalesce(p_name, ''));
 begin
-  if clock_timestamp() >= timestamptz '2026-11-04 00:00:00-05' then
+  if clock_timestamp() >= timestamptz '2026-11-06 00:00:00-05' then
     raise exception 'Team changes have closed.';
   end if;
   if v_user_id is null or not exists (
@@ -221,7 +221,7 @@ declare
   v_count integer;
   v_code text := upper(btrim(coalesce(p_code, '')));
 begin
-  if clock_timestamp() >= timestamptz '2026-11-04 00:00:00-05' then
+  if clock_timestamp() >= timestamptz '2026-11-06 00:00:00-05' then
     raise exception 'Team changes have closed.';
   end if;
   if v_user_id is null or not exists (
@@ -254,7 +254,7 @@ declare
   v_creator_id uuid;
   v_next_creator uuid;
 begin
-  if clock_timestamp() >= timestamptz '2026-11-04 00:00:00-05' then
+  if clock_timestamp() >= timestamptz '2026-11-06 00:00:00-05' then
     raise exception 'Team changes have closed.';
   end if;
   select team_id into v_team_id from public.team_members where user_id = v_user_id;

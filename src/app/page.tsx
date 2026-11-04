@@ -130,7 +130,7 @@ export default async function Home({
             </div>
           </div>
           <div className="hero-bottom shell">
-            <span>{canRegister ? "Registration closes Nov 3 at 11:59 p.m. ET" : "Registration is closed"}</span>
+            <span>{canRegister ? "Registration closes Nov 5 at 11:59 p.m. ET" : "Registration is closed"}</span>
             <span>OPEN TO ALL F&M MAJORS</span>
           </div>
         </section>
@@ -318,7 +318,7 @@ export default async function Home({
             <p>
               {user
                 ? "Your F&MHacks details and team are at the top of this page."
-                : canRegister ? `Seats are limited to ${CAPACITY} students. Register with your F&M email by November 3.` : "Registration has closed. Log in to view your account."}
+                : canRegister ? `Seats are limited to ${CAPACITY} students. Register with your F&M email by November 5.` : "Registration has closed. Log in to view your account."}
             </p>
           </div>
           <Link

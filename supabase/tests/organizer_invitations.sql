@@ -1,5 +1,5 @@
 -- Run on a disposable Supabase project with both invitation migrations applied.
--- Run before the Nov 4 public registration cutoff. The transaction rolls back
+-- Run before the Nov 6 public registration cutoff. The transaction rolls back
 -- all fixture users, profiles, and invitations.
 begin;
 do $$
