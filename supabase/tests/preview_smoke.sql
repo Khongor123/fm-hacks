@@ -1,5 +1,5 @@
 -- Read-only smoke check for the separate event-preview Supabase project.
--- Run in SQL Editor after all migrations, including 20261105000000.
+-- Run in SQL Editor after all migrations, including 20261106000001.
 do $$
 begin
   if to_regclass('public.profiles') is null or to_regclass('public.teams') is null
@@ -22,7 +22,8 @@ begin
     raise exception 'The event clock does not have its safe real-time default.';
   end if;
   if not has_function_privilege('authenticated', 'public.event_now()', 'EXECUTE')
-    or not has_function_privilege('authenticated', 'public.save_submission(text,text,text,text,boolean,text,text,text,boolean,boolean,boolean,timestamptz,boolean,text)', 'EXECUTE') then
+    or not has_function_privilege('authenticated', 'public.save_submission(text,text,text,text,boolean,text,text,text,boolean,boolean,boolean,timestamptz,boolean,text)', 'EXECUTE')
+    or not has_function_privilege('authenticated', 'public.update_submission_repo_public(text,boolean)', 'EXECUTE') then
     raise exception 'Participant RPC grants are missing.';
   end if;
   if has_schema_privilege('authenticated', 'app_private', 'USAGE')
