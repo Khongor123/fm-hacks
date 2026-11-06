@@ -12,8 +12,6 @@ export function freeShirtOfferOpen(now = Date.now()) {
   return now < Date.parse(FREE_SHIRT_DEADLINE);
 }
 
-export const teamChangesOpen = registrationOpen;
-
 export function siteUrl() {
   return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
 }

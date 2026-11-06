@@ -9,16 +9,16 @@ export function SlideDownload({ path }: { path: string }) {
   async function download() {
     setBusy(true); setError("");
     const { data, error } = await createClient().storage.from(SLIDE_BUCKET).download(path);
-    if (error || !data) setError("Slides could not be downloaded.");
+    if (error || !data) setError("Presentation file could not be downloaded.");
     else {
       const url = URL.createObjectURL(data);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `slides.${path.split(".").pop()}`;
+      link.download = `presentation.${path.split(".").pop()}`;
       link.click();
       window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
     }
     setBusy(false);
   }
-  return <span><button type="button" className="text-link" onClick={download} disabled={busy}>{busy ? "Downloading…" : "Download slides ↗"}</button>{error && <small role="alert"> {error}</small>}</span>;
+  return <span><button type="button" className="text-link" onClick={download} disabled={busy}>{busy ? "Downloading…" : path.endsWith(".mp4") ? "Download video ↗" : "Download slides ↗"}</button>{error && <small role="alert"> {error}</small>}</span>;
 }

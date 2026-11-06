@@ -3,6 +3,7 @@ export const SUBMISSIONS_OPEN = "2026-11-07T10:00:00-05:00";
 export const SUBMISSIONS_CLOSE = "2026-11-08T10:00:00-05:00";
 export const SLIDE_BUCKET = "submission-slides";
 export const MAX_SLIDE_BYTES = 10 * 1024 * 1024;
+export const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 export const TRACKS = ["AI", "Social good", "Creative build"] as const;
 
 export type Submission = {
@@ -15,6 +16,8 @@ export type Submission = {
   track: string | null;
   github_url: string | null;
   public_repo_confirmed: boolean;
+  repo_created_after_start_confirmed: boolean;
+  presentation_format: "live" | "video" | null;
   ai_level: string | null;
   ai_disclosure: string | null;
   slide_path: string | null;

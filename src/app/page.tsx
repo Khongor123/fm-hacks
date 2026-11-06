@@ -247,7 +247,7 @@ export default async function Home({
               <span>Project work begins</span>
             </div>
             <div className="schedule-row">
-              <time>Midnight</time>
+              <time>10:30 PM</time>
               <span>Late-night pizza</span>
             </div>
             <div className="schedule-day">SUNDAY · NOV 8</div>
@@ -280,8 +280,7 @@ export default async function Home({
             <div>
               <span>01</span>
               <p>
-                Write your project code during the hackathon. No prebuilt
-                project submissions.
+                Write your project code during the hackathon. Create your GitHub repository after 11:00 a.m. Eastern on November 7. No prebuilt project submissions.
               </p>
             </div>
             <div>

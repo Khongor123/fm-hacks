@@ -2,26 +2,29 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
-import { MAX_SLIDE_BYTES, SLIDE_BUCKET, TRACKS, type Submission } from "@/lib/event";
+import { MAX_SLIDE_BYTES, MAX_VIDEO_BYTES, SLIDE_BUCKET, TRACKS, type Submission } from "@/lib/event";
 import { SlideDownload } from "@/components/slide-download";
 import { useDeadlineRemaining } from "@/components/use-deadline-remaining";
 
 type FormState = {
   title: string; description: string; track: string; github_url: string;
   public_repo_confirmed: boolean; ai_level: string; ai_disclosure: string;
+  repo_created_after_start_confirmed: boolean; presentation_format: "live" | "video" | "";
   onsite_confirmed: boolean; no_outside_help_confirmed: boolean;
 };
 function initialForm(value: Submission | null): FormState {
   return {
     title: value?.title ?? "", description: value?.description ?? "", track: value?.track ?? "",
     github_url: value?.github_url ?? "", public_repo_confirmed: value?.public_repo_confirmed ?? false,
+    repo_created_after_start_confirmed: value?.repo_created_after_start_confirmed ?? false,
+    presentation_format: value?.presentation_format ?? "",
     ai_level: value?.ai_level ?? "", ai_disclosure: value?.ai_disclosure ?? "",
     onsite_confirmed: value?.onsite_confirmed ?? false,
     no_outside_help_confirmed: value?.no_outside_help_confirmed ?? false,
   };
 }
 function contentType(extension: string) {
-  return extension === "pdf" ? "application/pdf" : extension === "pptx"
+  return extension === "mp4" ? "video/mp4" : extension === "pdf" ? "application/pdf" : extension === "pptx"
     ? "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     : "application/x-iwork-keynote-sffkey";
 }
@@ -116,8 +119,9 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
     try {
       if (file) {
         const extension = file.name.split(".").pop()?.toLowerCase();
-        if (!extension || !["pdf", "pptx", "key"].includes(extension)) throw new Error("Choose a .pptx, .key, or .pdf file.");
-        if (!file.size || file.size > MAX_SLIDE_BYTES) throw new Error("Slides must be 10 MB or less.");
+        if (!extension || !["pdf", "pptx", "key", "mp4"].includes(extension)) throw new Error("Choose a .pptx, .key, .pdf, or .mp4 file.");
+        if (!file.size || file.size > (extension === "mp4" ? MAX_VIDEO_BYTES : MAX_SLIDE_BYTES)) throw new Error(extension === "mp4" ? "Videos must be 50 MB or less." : "Slides must be 10 MB or less.");
+        if ((form.presentation_format === "video" && extension !== "mp4") || (form.presentation_format === "live" && extension === "mp4")) throw new Error("Upload an MP4 for a video demo, or slides for a live presentation.");
         if (file.size > 6 * 1024 * 1024) {
           pendingKey = `pending-slide:${ownerKind}/${ownerId}:${file.name}:${file.size}:${file.lastModified}`;
           newPath = window.sessionStorage.getItem(pendingKey);
@@ -130,6 +134,8 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
       const { error: saveError } = await supabase.rpc("save_submission", {
         p_title: form.title, p_description: form.description, p_track: form.track,
         p_github_url: form.github_url, p_public_repo_confirmed: form.public_repo_confirmed,
+        p_repo_created_after_start_confirmed: form.repo_created_after_start_confirmed,
+        p_presentation_format: form.presentation_format || null,
         p_ai_level: form.ai_level || null, p_ai_disclosure: form.ai_disclosure,
         p_slide_path: newPath ?? submission?.slide_path ?? null, p_submit: final,
         p_onsite_confirmed: form.onsite_confirmed,
@@ -167,10 +173,11 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
   }
 
   async function updateRepo() {
+    if (!form.repo_created_after_start_confirmed) { setError("Confirm that this repository was created after 11:00 a.m. ET on November 7."); return; }
     setBusy(true); setError(""); setMessage("");
     try {
       const supabase = createClient();
-      const { error } = await supabase.rpc("update_submission_repo", { p_github_url: form.github_url });
+      const { error } = await supabase.rpc("update_submission_repo", { p_github_url: form.github_url, p_repo_created_after_start_confirmed: form.repo_created_after_start_confirmed });
       if (error) setError(error.message);
       else { setMessage("Repository link updated."); router.refresh(); }
     } catch (caught) {
@@ -183,23 +190,25 @@ export function SubmissionForm({ initial, ownerId, ownerKind, open, checkedIn, s
   return <section className="participant-panel submission-panel" id="submission">
     <div className="submission-heading"><div><span className="card-label">PROJECT SUBMISSION</span><h2>{ownerKind === "team" ? "One submission for your team." : "Your solo submission."}</h2></div><span className={`submission-state ${state.toLowerCase().replaceAll(" ", "-")}`}>{state}</span></div>
     {!editable ? <><p>The deadline has passed. Your submission is view only; the repository link can still be corrected.</p>{submission ? <>
-        <dl className="submission-summary"><div><dt>Project</dt><dd>{submission.title || "Untitled draft"}</dd></div><div><dt>Description</dt><dd>{submission.description || "—"}</dd></div><div><dt>Track</dt><dd>{submission.track || "—"}</dd></div><div><dt>AI use</dt><dd>{submission.ai_level || "—"}</dd></div><div><dt>AI disclosure</dt><dd>{submission.ai_disclosure || "—"}</dd></div><div><dt>Slides</dt><dd>{submission.slide_path ? <SlideDownload path={submission.slide_path} /> : "None uploaded"}</dd></div></dl>
-        {checkedIn ? <><div className="field"><label htmlFor="late_repo">GitHub repository URL</label><input id="late_repo" type="url" value={form.github_url} onChange={event => set("github_url", event.target.value)} /></div><button type="button" className="button button-dark" onClick={updateRepo} disabled={busy}>Update repository link</button></> : <p>Find an organizer to check in before correcting the repository link.</p>}
+        <dl className="submission-summary"><div><dt>Project</dt><dd>{submission.title || "Untitled draft"}</dd></div><div><dt>Description</dt><dd>{submission.description || "—"}</dd></div><div><dt>Track</dt><dd>{submission.track || "—"}</dd></div><div><dt>AI use</dt><dd>{submission.ai_level || "—"}</dd></div><div><dt>AI disclosure</dt><dd>{submission.ai_disclosure || "—"}</dd></div><div><dt>Presentation</dt><dd>{submission.presentation_format === "video" ? "Video demo" : "Live on stage"}</dd></div><div><dt>Presentation file</dt><dd>{submission.slide_path ? <SlideDownload path={submission.slide_path} /> : "None uploaded"}</dd></div></dl>
+        {checkedIn ? <><div className="field"><label htmlFor="late_repo">GitHub repository URL</label><input id="late_repo" type="url" value={form.github_url} onChange={event => set("github_url", event.target.value)} /></div><label className="check-line"><input type="checkbox" checked={form.repo_created_after_start_confirmed} onChange={event => set("repo_created_after_start_confirmed", event.target.checked)} /> I confirm the repository was created after 11:00 a.m. ET on November 7.</label><button type="button" className="button button-dark" onClick={updateRepo} disabled={busy}>Update repository link</button></> : <p>Find an organizer to check in before correcting the repository link.</p>}
       </> : <p>No submission was saved before the deadline.</p>}</>
       : !checkedIn ? <p>Check in with an organizer at Stager Auditorium before editing or submitting. Bring your student ID so they can verify your identity.</p>
       : <><p>Any checked-in team member can save, revise, and submit this shared entry until Sunday at 10:00 a.m. ET.</p>
         <div className="submission-fields"><div className="field"><label htmlFor="project_title">Project title</label><input id="project_title" maxLength={120} value={form.title} onChange={event => set("title", event.target.value)} /></div>
           <div className="field"><label htmlFor="project_description">Short description</label><textarea id="project_description" maxLength={500} rows={3} value={form.description} onChange={event => set("description", event.target.value)} /></div>
           <div className="field"><label htmlFor="project_track">Track (required)</label><select id="project_track" value={form.track} onChange={event => { set("track", event.target.value); setError(""); }} required><option value="">Choose a track</option>{TRACKS.map(track => <option key={track}>{track}</option>)}</select></div>
-          <div className="field"><label htmlFor="project_github">Public GitHub repository URL</label><input id="project_github" type="url" placeholder="https://github.com/owner/repository" value={form.github_url} onChange={event => set("github_url", event.target.value)} /><small>Organizers will check that this link opens publicly.</small></div>
+          <div className="field"><label htmlFor="project_github">Public GitHub repository URL</label><input id="project_github" type="url" placeholder="https://github.com/owner/repository" value={form.github_url} onChange={event => set("github_url", event.target.value)} /><small>Create the repository after 11:00 a.m. Eastern on November 7. Organizers will verify its creation time and public access.</small></div>
           <label className="check-line"><input type="checkbox" checked={form.public_repo_confirmed} onChange={event => set("public_repo_confirmed", event.target.checked)} /> I confirm the repository is public.</label>
+          <label className="check-line"><input type="checkbox" checked={form.repo_created_after_start_confirmed} onChange={event => set("repo_created_after_start_confirmed", event.target.checked)} /> I confirm the repository was created after 11:00 a.m. ET on November 7.</label>
           <div className="field"><label htmlFor="ai_level">AI-use level</label><select id="ai_level" value={form.ai_level} onChange={event => set("ai_level", event.target.value)}><option value="">Choose a level</option><option value="none">None</option><option value="assisted">Assisted</option><option value="substantial">Substantial</option></select></div>
           <div className="field"><label htmlFor="ai_disclosure">How did you use AI?</label><textarea id="ai_disclosure" maxLength={1000} rows={3} placeholder="If none, write ‘No AI used.’" value={form.ai_disclosure} onChange={event => set("ai_disclosure", event.target.value)} /></div>
-          <div className="field"><label htmlFor="slides">Presentation slides</label><input key={fileInputKey} id="slides" type="file" accept=".pptx,.key,.pdf" onChange={event => setFile(event.target.files?.[0] ?? null)} /><small>.pptx, .key, or .pdf, up to 10 MB. A Keynote package should be <a href="https://support.apple.com/en-gb/guide/keynote/tana0d19882a/mac" target="_blank" rel="noreferrer">exported to PDF</a> before upload.</small>{submission?.slide_path && <span>Current slides: <SlideDownload path={submission.slide_path} /></span>}</div>
+          <div className="field"><label htmlFor="presentation_format">Presentation format</label><select id="presentation_format" value={form.presentation_format} onChange={event => { set("presentation_format", event.target.value as FormState["presentation_format"]); setFile(null); setFileInputKey(value => value + 1); }}><option value="">Choose a format</option><option value="live">Live presentation on stage</option><option value="video">Video demo</option></select></div>
+          <div className="field"><label htmlFor="slides">{form.presentation_format === "video" ? "Video demo" : "Presentation slides"}</label><input key={fileInputKey} id="slides" type="file" accept={form.presentation_format === "video" ? ".mp4,video/mp4" : ".pptx,.key,.pdf"} onChange={event => setFile(event.target.files?.[0] ?? null)} /><small>{form.presentation_format === "video" ? "MP4, up to 50 MB. Aim for 5–7 minutes." : "For a live presentation: .pptx, .key, or .pdf, up to 10 MB. Export Keynote packages to PDF before upload."}</small>{submission?.slide_path && <span>Current file: <SlideDownload path={submission.slide_path} /></span>}</div>
           <label className="check-line"><input type="checkbox" checked={form.onsite_confirmed} onChange={event => set("onsite_confirmed", event.target.checked)} /> Our project work was done onsite during the hackathon.</label>
           <label className="check-line"><input type="checkbox" checked={form.no_outside_help_confirmed} onChange={event => set("no_outside_help_confirmed", event.target.checked)} /> Direct project work came only from our team; we received no outside help.</label>
         </div><div className="submission-actions"><button type="button" className="button button-ghost" disabled={busy} onClick={() => save(false)}>Save draft</button><button type="button" className="button button-dark" disabled={busy} onClick={() => save(true)}>{submission?.status === "submitted" ? "Resubmit project" : "Submit project"}</button></div>
-        {progress !== null && <p role="status">Uploading slides: {progress}%</p>}
+        {progress !== null && <p role="status">Uploading presentation file: {progress}%</p>}
       </>}
     {message && <p className="form-notice success" role="status">{message}</p>}{error && <p className="form-notice error" role="alert">{error}</p>}
   </section>;

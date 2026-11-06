@@ -1,5 +1,5 @@
 -- Read-only smoke check for the separate event-preview Supabase project.
--- Run in SQL Editor after schema.sql and 20261011_event_submissions.sql.
+-- Run in SQL Editor after all migrations, including 20261105000000.
 do $$
 begin
   if to_regclass('public.profiles') is null or to_regclass('public.teams') is null
@@ -11,9 +11,9 @@ begin
   end if;
   if not exists (
     select 1 from storage.buckets
-    where id = 'submission-slides' and public = false and file_size_limit = 10485760
+    where id = 'submission-slides' and public = false and file_size_limit = 52428800
   ) then
-    raise exception 'The private 10 MiB slides bucket is missing or misconfigured.';
+    raise exception 'The private 50 MiB presentation bucket is missing or misconfigured.';
   end if;
   if not exists (
     select 1 from app_private.event_clock_offset
@@ -22,7 +22,7 @@ begin
     raise exception 'The event clock does not have its safe real-time default.';
   end if;
   if not has_function_privilege('authenticated', 'public.event_now()', 'EXECUTE')
-    or not has_function_privilege('authenticated', 'public.save_submission(text,text,text,text,boolean,text,text,text,boolean,boolean,boolean,timestamptz)', 'EXECUTE') then
+    or not has_function_privilege('authenticated', 'public.save_submission(text,text,text,text,boolean,text,text,text,boolean,boolean,boolean,timestamptz,boolean,text)', 'EXECUTE') then
     raise exception 'Participant RPC grants are missing.';
   end if;
   if has_schema_privilege('authenticated', 'app_private', 'USAGE')
