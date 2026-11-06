@@ -31,7 +31,7 @@ Public registration closes **November 6, 2026 at 11:59 p.m. Eastern**. The serve
 
 The historical [`enforce_capacity_50`](supabase/migrations/20261029000001_enforce_capacity_50.sql) repair replaced an older production assignment function that used 75. The [65-place expansion](supabase/migrations/20261103000000_expand_capacity_65.sql) supersedes the later 60-place limit and fills available places through 65 from the waitlist. Contact students whose status changes; the site does not send automatic waitlist emails.
 
-Confirmed participants can create or join one team of up to four people using a 6-character code. Members can leave before the registration deadline. If the creator leaves, the earliest remaining member becomes creator; an empty team is deleted. Database functions enforce the team limit and deadline even if requests bypass the website. Team names and member names are visible only to members of that team through `get_my_team()`. Applying the six-character-code migration gives existing teams new codes; members must share their new code with anyone joining afterward.
+Confirmed participants can create or join one team of up to four people using a 6-character code. Members can leave without a team-change deadline. If the creator leaves, the earliest remaining member becomes creator; an empty team is deleted. Database functions enforce the team limit even if requests bypass the website. Team names and member names are visible only to members of that team through `get_my_team()`. Applying the six-character-code migration gives existing teams new codes; members must share their new code with anyone joining afterward.
 
 ## Email and account limits
 
