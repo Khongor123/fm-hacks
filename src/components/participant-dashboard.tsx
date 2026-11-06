@@ -49,7 +49,7 @@ export function ParticipantDashboard({ profile, team, teamLoadError, now, notice
         <span className="card-label">REGISTRATION</span>
         <span className={`status-badge status-${profile.registration_status}`}>{profile.registration_status.replaceAll("_", " ")}</span>
         <h2>{statusDetails[profile.registration_status] ?? "Your registration is being processed."}</h2>
-        <p>Saturday, November 7 · 9:00 a.m. · Stager Auditorium</p>
+        <p>Saturday, November 7 · 10:00 a.m. · Stager Auditorium</p>
         {profile.admin && <Link href="/admin" className="text-link">Open organizer roster ↗</Link>}
       </section>
       <section className="participant-panel participant-team" id="my-team">

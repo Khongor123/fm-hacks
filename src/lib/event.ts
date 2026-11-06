@@ -1,6 +1,6 @@
-export const EVENT_DAY_START = "2026-11-07T09:00:00-05:00";
-export const SUBMISSIONS_OPEN = "2026-11-07T10:00:00-05:00";
-export const SUBMISSIONS_CLOSE = "2026-11-08T10:00:00-05:00";
+export const EVENT_DAY_START = "2026-11-07T10:00:00-05:00";
+export const SUBMISSIONS_OPEN = "2026-11-07T11:00:00-05:00";
+export const SUBMISSIONS_CLOSE = "2026-11-08T11:00:00-05:00";
 export const SLIDE_BUCKET = "submission-slides";
 export const MAX_SLIDE_BYTES = 10 * 1024 * 1024;
 export const MAX_VIDEO_BYTES = 50 * 1024 * 1024;

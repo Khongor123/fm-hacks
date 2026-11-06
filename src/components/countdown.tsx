@@ -35,7 +35,7 @@ export function Countdown({ serverNow }: { serverNow?: number }) {
           </div>
         ))}
       </div>
-      <p>Saturday, November 7 · 9:00 a.m. ET</p>
+      <p>Saturday, November 7 · 10:00 a.m. ET</p>
     </div>
   );
 }

@@ -130,7 +130,7 @@ export default async function Home({
             </div>
           </div>
           <div className="hero-bottom shell">
-            <span>{canRegister ? "Registration closes Nov 5 at 11:59 p.m. ET" : "Registration is closed"}</span>
+            <span>{canRegister ? "Registration closes Nov 6 at 11:59 p.m. ET" : "Registration is closed"}</span>
             <span>OPEN TO ALL F&M MAJORS</span>
           </div>
         </section>
@@ -239,28 +239,28 @@ export default async function Home({
           <div className="schedule-list">
             <div className="schedule-day">SATURDAY · NOV 7</div>
             <div className="schedule-row">
-              <time>9:00 AM</time>
+              <time>10:00 AM</time>
               <span>Welcome and kickoff</span>
             </div>
             <div className="schedule-row">
-              <time>10:00 AM</time>
+              <time>11:00 AM</time>
               <span>Project work begins</span>
             </div>
             <div className="schedule-row">
-              <time>10:30 PM</time>
+              <time>11:30 PM</time>
               <span>Late-night pizza</span>
             </div>
             <div className="schedule-day">SUNDAY · NOV 8</div>
             <div className="schedule-row">
-              <time>10:00 AM</time>
+              <time>11:00 AM</time>
               <span>Projects due</span>
             </div>
             <div className="schedule-row">
-              <time>10:30 AM</time>
+              <time>11:30 AM</time>
               <span>Presentations and judging</span>
             </div>
             <div className="schedule-row">
-              <time>~1:30 PM</time>
+              <time>~2:00 PM</time>
               <span>Results and closing</span>
             </div>
           </div>
@@ -317,7 +317,7 @@ export default async function Home({
             <p>
               {user
                 ? "Your F&MHacks details and team are at the top of this page."
-                : canRegister ? `Seats are limited to ${CAPACITY} students. Register with your F&M email by November 5.` : "Registration has closed. Log in to view your account."}
+                : canRegister ? `Seats are limited to ${CAPACITY} students. Register with your F&M email by November 6.` : "Registration has closed. Log in to view your account."}
             </p>
           </div>
           <Link
