@@ -1,5 +1,5 @@
 -- Read-only smoke check for the separate event-preview Supabase project.
--- Run in SQL Editor after all migrations, including 20261106000001.
+-- Run in SQL Editor after all migrations, including 20261106000002.
 do $$
 begin
   if to_regclass('public.profiles') is null or to_regclass('public.teams') is null
@@ -33,6 +33,11 @@ begin
   if (select count(*) from pg_policies where schemaname = 'storage' and tablename = 'objects'
       and policyname in ('Authorized slide downloads', 'Checked-in slide uploads', 'Remove unused slides')) <> 3 then
     raise exception 'A slides Storage policy is missing.';
+  end if;
+  if public.slide_scope('team/00000000-0000-0000-0000-000000000000/11111111-1111-1111-1111-111111111111.mp4') is distinct from 'team'
+    or public.slide_scope('solo/00000000-0000-0000-0000-000000000000/11111111-1111-1111-1111-111111111111.mp4') is distinct from 'solo'
+    or public.slide_scope('solo/00000000-0000-0000-0000-000000000000/11111111-1111-1111-1111-111111111111.exe') is not null then
+    raise exception 'Presentation file paths are not validating MP4 and slide extensions correctly.';
   end if;
   raise notice 'Event preview schema and access checks passed.';
 end;
