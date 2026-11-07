@@ -240,7 +240,7 @@ export default async function Home({
             <div className="schedule-day">SATURDAY · NOV 7</div>
             <div className="schedule-row">
               <time>10:00 AM</time>
-              <span>Welcome and kickoff</span>
+              <span>Welcome and kickoff · Adams Auditorium</span>
             </div>
             <div className="schedule-row">
               <time>11:00 AM</time>
