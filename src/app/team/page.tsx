@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createTeam, joinTeam, leaveTeam } from "@/app/actions/team";
 import { CopyTeamCode } from "@/components/copy-team-code";
 import { FormNotice } from "@/components/form-notice";
+import { JoinTeamButton } from "@/components/join-team-button";
 import type { Team } from "@/components/participant-dashboard";
 import { createClient } from "@/lib/supabase/server";
 
@@ -36,7 +37,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Promise
         <form action={leaveTeam}><button type="submit" className="text-link">Leave team</button></form>
       </> : <div className="team-actions">
         <form action={createTeam} className="team-action-card"><h3>Create a team</h3><p>Give your team a name, then share its code.</p><div className="field"><label htmlFor="team_name">Team name</label><input id="team_name" name="team_name" minLength={2} maxLength={40} placeholder="Your team name" required /></div><button type="submit" className="button button-dark">Create team <span aria-hidden="true">→</span></button></form>
-        <form action={joinTeam} className="team-action-card"><h3>Join a team</h3><p>Ask a teammate for their 6-character code.</p><div className="field"><label htmlFor="team_code">Team code</label><input id="team_code" name="team_code" minLength={6} maxLength={6} placeholder="6-character code" autoCapitalize="characters" required /></div><button type="submit" className="button button-ghost">Join team <span aria-hidden="true">→</span></button></form>
+        <form action={joinTeam} className="team-action-card"><h3>Join a team</h3><p>Ask a teammate for their 6-character code.</p><div className="field"><label htmlFor="team_code">Team code</label><input id="team_code" name="team_code" minLength={6} maxLength={6} placeholder="6-character code" autoCapitalize="characters" required /></div><JoinTeamButton /></form>
       </div>}
     </section>
   </div></main>;

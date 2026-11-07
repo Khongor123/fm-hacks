@@ -50,7 +50,13 @@ export async function joinTeam(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   const { error } = await supabase.rpc("join_team", { p_code: code });
-  if (error) teamError(error.message, error.code);
+  if (error) {
+    // A second request can arrive after the first one joined successfully.
+    const { data: currentTeam, error: teamReadError } = await supabase.rpc("get_my_team");
+    if (teamReadError || (currentTeam as { code?: string } | null)?.code !== code) {
+      teamError(error.message, error.code);
+    }
+  }
   revalidatePath("/");
   revalidatePath("/team");
   redirect("/team?team_notice=joined");
